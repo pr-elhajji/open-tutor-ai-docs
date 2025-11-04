@@ -80,6 +80,19 @@ const config: Config = {
   ],
 
   themeConfig: {
+     metadata: [
+      {
+        name: 'description',
+        content:
+          'Open TutorAI is an open-source educational platform that combines artificial intelligence and personalized learning to help teachers and students collaborate, interact, and progress together.',
+      },
+      {
+        name: 'keywords',
+        content:
+          'Open TutorAI, AI education, personalized learning, educational chatbot, open-source platform, intelligent tutoring system',
+      },
+      { name: 'author', content: 'Open TutorAI Team' },
+    ],
     colorMode: {
       defaultMode: 'light',
       disableSwitch: true,
