@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>OpenTutorAI</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:#f0f4ff;min-height:100vh}
+
+/* ===== ROLE SELECTION ===== */
+#page-role{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#eef2ff;padding:40px 20px}
+#page-role h1{font-size:2rem;font-weight:700;color:#1a1a2e;margin-bottom:8px}
+#page-role p{color:#555;margin-bottom:40px}
+.roles{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+.role-card{background:#fff;border:2px solid #e0e0e0;border-radius:16px;padding:36px 32px;width:280px;display:flex;flex-direction:column;align-items:center;gap:14px;transition:.2s}
+.role-card:hover{border-color:#aaa;box-shadow:0 4px 18px rgba(0,0,0,.1)}
+.role-icon{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.ic-student{background:#e8eeff}.ic-teacher{background:#e6f9f0}.ic-parent{background:#f3eeff}
+.role-card h2{font-size:1.15rem;font-weight:700;color:#1a1a2e}
+.role-features{list-style:none;width:100%;margin-bottom:8px}
+.role-features li{color:#444;font-size:.88rem;padding:4px 0;display:flex;align-items:center;gap:8px}
+.role-features li::before{content:'✓';color:#22c55e;font-weight:700}
+.btn-role{width:100%;padding:13px;border:none;border-radius:8px;color:#fff;font-size:.95rem;font-weight:600;cursor:pointer;transition:.15s}
+.btn-student{background:#3b5bdb}.btn-student:hover{background:#2f4bc0}
+.btn-teacher{background:#16a34a}.btn-teacher:hover{background:#128c3e}
+.btn-parent{background:#9333ea}.btn-parent:hover{background:#7e22ce}
+.role-note{margin-top:28px;color:#666;font-size:.8rem;text-align:center;max-width:600px}
+
+/* ===== DASHBOARD LAYOUT ===== */
+#page-dash{display:none;min-height:100vh;background:#f0f4ff}
+.topbar{background:#fff;border-bottom:1px solid #e5e7eb;height:60px;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100}
+.logo{font-size:1.3rem;font-weight:800;color:#1e3a8a;letter-spacing:-1px}
+.logo span{color:#3b5bdb}
+.topbar-greeting{flex:1;margin-left:16px}
+.topbar-greeting h3{font-size:.95rem;font-weight:600;color:#1a1a2e}
+.topbar-greeting p{font-size:.78rem;color:#888}
+.topbar-search{background:#f3f4f6;border:none;border-radius:20px;padding:8px 16px;width:200px;outline:none;font-size:.85rem;color:#333}
+.topbar-icons{display:flex;gap:14px;align-items:center}
+.topbar-icons span{font-size:1.2rem;cursor:pointer;color:#555}
+.avatar{width:34px;height:34px;background:#f97316;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem}
+
+.layout{display:flex;min-height:calc(100vh - 60px)}
+.sidebar{width:220px;background:#fff;border-right:1px solid #e5e7eb;padding:16px 0;display:flex;flex-direction:column;gap:2px}
+.sidebar-section{font-size:.7rem;color:#aaa;text-transform:uppercase;padding:10px 20px 4px;letter-spacing:.5px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 20px;cursor:pointer;border-radius:0;font-size:.88rem;color:#444;transition:.15s}
+.nav-item:hover{background:#f3f4f6;color:#1a1a2e}
+.nav-item.active{background:#eff3ff;color:#3b5bdb;font-weight:600;border-left:3px solid #3b5bdb}
+.nav-item .ni{font-size:1.05rem}
+.sidebar-footer{margin-top:auto;padding:16px 20px;font-size:.75rem;color:#aaa}
+
+.main{flex:1;padding:28px;position:relative}
+
+/* ===== DASHBOARD HOME ===== */
+#sec-dashboard{}
+.dash-welcome{font-size:1.4rem;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.dash-sub{color:#888;font-size:.88rem;margin-bottom:24px}
+.stats-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:12px;padding:20px 24px;flex:1;min-width:160px;border:1px solid #e5e7eb}
+.stat-card .num{font-size:1.8rem;font-weight:700;color:#3b5bdb}
+.stat-card .lbl{font-size:.82rem;color:#888;margin-top:4px}
+
+/* ===== SUPPORT SECTION ===== */
+#sec-support{display:none}
+.btn-create-support{background:#3b5bdb;color:#fff;border:none;padding:11px 22px;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;margin-left:auto;margin-bottom:20px}
+.btn-create-support:hover{background:#2f4bc0}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:340px;color:#bbb;gap:12px}
+.empty-state .icon{font-size:3rem}
+.empty-state p{font-size:1rem;color:#555;font-weight:500}
+.empty-state small{color:#aaa}
+
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:#fff;border-radius:16px;padding:40px 36px;width:440px;max-width:95vw;text-align:center;position:relative}
+.modal-close{position:absolute;top:14px;right:18px;font-size:1.3rem;cursor:pointer;color:#888;background:none;border:none}
+.modal-box .m-logo{font-size:1.5rem;font-weight:800;color:#1e3a8a;margin-bottom:18px;display:block}
+.modal-box h3{font-size:1.05rem;font-weight:700;color:#1a1a2e;margin-bottom:8px}
+.modal-box p{color:#666;font-size:.88rem;margin-bottom:20px}
+.modal-steps{list-style:none;text-align:left;margin-bottom:28px}
+.modal-steps li{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;font-size:.88rem;color:#333}
+.step-num{width:24px;height:24px;background:#3b5bdb;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:1px}
+.btn-modal-create{background:#9333ea;color:#fff;border:none;padding:13px 32px;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;width:100%;margin-bottom:12px}
+.btn-modal-create:hover{background:#7e22ce}
+.modal-box label{font-size:.8rem;color:#888;cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center}
+
+/* ===== FORM WIZARD ===== */
+#sec-form{display:none}
+.wizard-steps{display:flex;align-items:center;margin-bottom:32px;gap:0}
+.ws{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;position:relative}
+.ws::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:#e5e7eb;z-index:0}
+.ws:last-child::after{display:none}
+.ws-circle{width:30px;height:30px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#aaa;position:relative;z-index:1;transition:.3s}
+.ws.active .ws-circle{background:#3b5bdb;color:#fff}
+.ws.done .ws-circle{background:#3b5bdb;color:#fff}
+.ws.done .ws-circle::after{content:'✓'}
+.ws-label{font-size:.72rem;color:#aaa;white-space:nowrap}
+.ws.active .ws-label{color:#3b5bdb;font-weight:600}
+
+.form-card{background:#fff;border-radius:14px;padding:32px;border:1px solid #e5e7eb}
+.form-card h2{font-size:1.15rem;font-weight:700;color:#1a1a2e;margin-bottom:22px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:.85rem;color:#333;font-weight:600;margin-bottom:6px}
+.form-group .req{color:#ef4444;margin-left:2px}
+.form-group input,.form-group textarea{width:100%;border:1px solid #d1d5db;border-radius:8px;padding:10px 14px;font-size:.88rem;outline:none;color:#1a1a2e;transition:.15s}
+.form-group input:focus,.form-group textarea:focus{border-color:#3b5bdb;box-shadow:0 0 0 2px #dbeafe}
+.form-group textarea{resize:vertical;min-height:90px}
+.form-hint{font-size:.75rem;color:#9ca3af;margin-top:4px}
+
+.subjects-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.subj-btn{border:1.5px solid #e5e7eb;border-radius:10px;padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;background:#fff;font-size:.8rem;color:#333;font-weight:500;transition:.15s}
+.subj-btn:hover{border-color:#3b5bdb;background:#eff3ff}
+.subj-btn.selected{border-color:#3b5bdb;background:#eff3ff;color:#3b5bdb}
+.subj-btn .sicon{font-size:1.5rem}
+.subjects-nav{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:14px;font-size:.82rem;color:#555}
+.subjects-nav button{border:1px solid #d1d5db;background:#fff;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:.8rem}
+.custom-subj{width:100%;border:1.5px solid #e5e7eb;border-radius:8px;padding:10px 14px;font-size:.85rem;outline:none;color:#333}
+.custom-subj:focus{border-color:#3b5bdb}
+
+.objectives-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.obj-btn{border:1.5px solid #e5e7eb;border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;background:#fff;font-size:.84rem;color:#333;font-weight:500;transition:.15s;flex:1;min-width:140px}
+.obj-btn:hover{border-color:#3b5bdb;background:#eff3ff}
+.obj-btn.selected{border-color:#3b5bdb;background:#eff3ff;color:#3b5bdb}
+.obj-btn .oicon{font-size:1.3rem}
+
+.level-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:12px}
+.level-btn{border:1.5px solid #e5e7eb;border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:6px;cursor:pointer;background:#fff;transition:.15s}
+.level-btn:hover{border-color:#3b5bdb;background:#eff3ff}
+.level-btn.selected{border-color:#3b5bdb;background:#eff3ff}
+.level-btn h4{font-size:.9rem;font-weight:600;color:#1a1a2e}
+.level-btn p{font-size:.78rem;color:#888}
+
+.upload-zone{border:2px dashed #d1d5db;border-radius:12px;padding:40px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:.15s;background:#fafafa}
+.upload-zone:hover{border-color:#3b5bdb;background:#eff3ff}
+.upload-zone .uicon{font-size:2rem;color:#3b5bdb}
+.upload-zone p{font-size:.88rem;color:#555;font-weight:500}
+.upload-zone small{color:#aaa;font-size:.78rem}
+
+.form-nav{display:flex;justify-content:space-between;margin-top:28px;align-items:center}
+.btn-back{background:#fff;border:1.5px solid #d1d5db;color:#444;padding:11px 22px;border-radius:8px;font-size:.88rem;cursor:pointer;display:flex;align-items:center;gap:6px}
+.btn-back:hover{background:#f3f4f6}
+.btn-next{background:#3b5bdb;color:#fff;border:none;padding:11px 26px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+.btn-next:hover{background:#2f4bc0}
+
+/* REVIEW */
+.review-section{margin-bottom:18px}
+.review-section h4{font-size:.82rem;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.review-section p{font-size:.92rem;color:#1a1a2e;font-weight:500}
+.review-chip{display:inline-block;background:#eff3ff;color:#3b5bdb;border-radius:6px;padding:4px 12px;font-size:.82rem;font-weight:600;margin-right:6px}
+
+/* other sections */
+#sec-classes,#sec-assignments,#sec-messages,#sec-profile{display:none}
+.placeholder-sec{display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;color:#bbb;gap:12px;font-size:1rem}
+
+/* breadcrumb */
+.sec-header{display:flex;align-items:center;margin-bottom:20px;gap:10px}
+.sec-header h2{font-size:1.1rem;font-weight:700;color:#1a1a2e}
+</style>
+</head>
+<body>
+
+<!-- ===== PAGE 1: ROLE SELECTION ===== -->
+<div id="page-role">
+  <h1>Choisissez votre rôle</h1>
+  <p>Sélectionnez le rôle qui vous décrit le mieux</p>
+  <div class="roles">
+    <div class="role-card">
+      <div class="role-icon ic-student">🎓</div>
+      <h2>Apprenant</h2>
+      <ul class="role-features">
+        <li>Parcours d'apprentissage personnalisé</li>
+        <li>Suivre votre progression</li>
+        <li>Accéder aux supports d'étude</li>
+        <li>Se connecter avec des tuteurs</li>
+      </ul>
+      <button class="btn-role btn-student" onclick="goToDash()">Sélectionner un rôle</button>
+    </div>
+    <div class="role-card">
+      <div class="role-icon ic-teacher">👩‍🏫</div>
+      <h2>Enseignant</h2>
+      <ul class="role-features">
+        <li>Gérer vos classes</li>
+        <li>Surveiller la progression des élèves</li>
+        <li>Créer des devoirs</li>
+        <li>Assistant d'enseignement IA</li>
+      </ul>
+      <button class="btn-role btn-teacher" onclick="goToDash()">Sélectionner un rôle</button>
+    </div>
+    <div class="role-card">
+      <div class="role-icon ic-parent">👨‍👧</div>
+      <h2>Parent</h2>
+      <ul class="role-features">
+        <li>Suivre la progression de l'enfant</li>
+        <li>Communication avec les enseignants</li>
+        <li>Consulter les rapports de performance</li>
+        <li>Planifier des consultations</li>
+      </ul>
+      <button class="btn-role btn-parent" onclick="goToDash()">Sélectionner un rôle</button>
+    </div>
+  </div>
+  <p class="role-note">Remarque : Votre rôle détermine les fonctionnalités et les niveaux d'accès qui vous sont disponibles. Vous pouvez demander un changement de rôle ultérieurement si nécessaire.</p>
+</div>
+
+<!-- ===== PAGE 2: DASHBOARD ===== -->
+<div id="page-dash">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo"><span>OT</span></div>
+    <div class="topbar-greeting">
+      <h3>Bonjour  👋</h3>
+      <p>Apprenons quelque chose de nouveau aujourd'hui !</p>
+    </div>
+    <input class="topbar-search" placeholder="🔍  Recherche"/>
+    <div class="topbar-icons">
+      <span title="Notifications">🔔</span>
+      <span title="Mode sombre">🌙</span>
+      <span title="Historique">🕐</span>
+    </div>
+    <div class="avatar">OT</div>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-section">APPRENANT PORTAL</div>
+      <div class="nav-item active" id="nav-dashboard" onclick="showSection('dashboard')"><span class="ni">⊞</span> Tableau de bord</div>
+      <div class="nav-item" id="nav-classes" onclick="showSection('classes')"><span class="ni">🖼</span> Mes classes</div>
+      <div class="nav-item" id="nav-support" onclick="showSection('support')"><span class="ni">💬</span> Soutien</div>
+      <div class="nav-item" id="nav-assignments" onclick="showSection('assignments')"><span class="ni">📋</span> Devoirs</div>
+      <div class="nav-item" id="nav-messages" onclick="showSection('messages')"><span class="ni">✉️</span> Messages</div>
+      <div class="nav-item" id="nav-profile" onclick="showSection('profile')"><span class="ni">⚙️</span> Profil et paramètres</div>
+      <div class="sidebar-footer">© 2025 OpenTutorAI &nbsp;·&nbsp; Aide</div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- DASHBOARD HOME -->
+      <div id="sec-dashboard">
+       
+        <div class="sec-header">
+          <button class="btn-create-support" onclick="openModal()">＋ Soutien</button>
+        </div>
+        <div id="support-empty" class="empty-state">
+          <div class="icon">💬</div>
+          <p>Aucun soutien trouvé</p>
+          <small>Créer un soutien pour obtenir de l'aide personnalisée</small>
+        </div>
+      </div>
+      
+
+      <!-- SUPPORT SECTION -->
+      <div id="sec-support">
+        <div class="sec-header">
+          <button class="btn-create-support" onclick="openModal()">＋ Soutien</button>
+        </div>
+        <div id="support-empty" class="empty-state">
+          <div class="icon">💬</div>
+          <p>Aucun soutien trouvé</p>
+          <small>Créer un soutien pour obtenir de l'aide personnalisée</small>
+        </div>
+      </div>
+
+      <!-- FORM WIZARD -->
+      <div id="sec-form">
+        <div class="wizard-steps" id="wizard-steps"></div>
+        <div class="form-card" id="form-content"></div>
+        <div class="form-nav">
+          <button class="btn-back" id="btn-back" onclick="prevStep()">← Retour en arrière</button>
+          <button class="btn-next" id="btn-next" onclick="nextStep()">Continue →</button>
+        </div>
+      </div>
+
+      <!-- OTHER SECTIONS -->
+      <div id="sec-classes"><div class="placeholder-sec">🖼️<p>Mes classes – bientôt disponible</p></div></div>
+      <div id="sec-assignments"><div class="placeholder-sec">📋<p>Devoirs – bientôt disponible</p></div></div>
+      <div id="sec-messages"><div class="placeholder-sec">✉️<p>Messages – bientôt disponible</p></div></div>
+      <div id="sec-profile"><div class="placeholder-sec">⚙️<p>Profil et paramètres – bientôt disponible</p></div></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <span class="m-logo">OT.</span>
+    <h3>Créer des tutoriels personnalisés pour n'importe quel sujet ou thème</h3>
+    <p>Créer votre parcours d'apprentissage</p>
+    <ul class="modal-steps">
+      <li><div class="step-num">1</div> Choisissez votre sujet et votre niveau</li>
+      <li><div class="step-num">2</div> Définissez vos objectifs d'apprentissage</li>
+      <li><div class="step-num">3</div> Profitez d'un apprentissage personnalisé avec l'IA</li>
+    </ul>
+    <button class="btn-modal-create" onclick="startWizard()">Créer mon soutien</button>
+    <label><input type="checkbox"/> Ne pas me montrer à nouveau</label>
+  </div>
+</div>
+
+<script>
+// ---- Navigation ----
+function goToDash(){
+  document.getElementById('page-role').style.display='none';
+  document.getElementById('page-dash').style.display='block';
+}
+
+function showSection(name){
+  ['dashboard','support','form','classes','assignments','messages','profile'].forEach(s=>{
+    document.getElementById('sec-'+s).style.display='none';
+  });
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+name).style.display='block';
+  const navId = name==='form'?'nav-support':('nav-'+name);
+  const el = document.getElementById(navId);
+  if(el) el.classList.add('active');
+}
+
+// ---- Modal ----
+function openModal(){document.getElementById('modal-overlay').classList.add('show')}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('show')}
+
+// ---- Wizard state ----
+const steps = ['Sujet','Cours','Objectifs','Niveau','Détails','Révision'];
+let currentStep = 0;
+const formData = {title:'',description:'',subject:'',customSubject:'',courseMaterial:'',objective:'',objectiveType:'',level:''};
+let subjPage = 0;
+const subjPages = [
+  [{icon:'📊',label:'Mathématiques'},{icon:'🔬',label:'Science'},{icon:'🏛',label:'Histoire'},{icon:'💻',label:'Informatique'}],
+  [{icon:'📖',label:'Littérature'},{icon:'🌍',label:'Géographie'},{icon:'🎨',label:'Arts'},{icon:'🧬',label:'Biologie'}],
+  [{icon:'⚗️',label:'Chimie'},{icon:'🎵',label:'Musique'},{icon:'🏃',label:'Sport'},{icon:'🗣',label:'Langues'}]
+];
+
+function startWizard(){
+  closeModal();
+  currentStep=0;
+  formData.title='';formData.description='';formData.subject='';formData.customSubject='';
+  formData.courseMaterial='';formData.objective='';formData.objectiveType='';formData.level='';
+  showSection('form');
+  renderWizard();
+}
+
+function renderWizard(){
+  renderStepIndicator();
+  renderStep();
+  document.getElementById('btn-back').style.display = currentStep===0?'none':'flex';
+  document.getElementById('btn-next').textContent = currentStep===steps.length-1?'Terminer ✓':'Continue →';
+}
+
+function renderStepIndicator(){
+  const c = document.getElementById('wizard-steps');
+  c.innerHTML = steps.map((s,i)=>{
+    let cls = i<currentStep?'ws done':i===currentStep?'ws active':'ws';
+    let num = i<currentStep?'':i+1;
+    return `<div class="${cls}"><div class="ws-circle">${num}</div><div class="ws-label">${s}</div></div>`;
+  }).join('');
+}
+
+function renderStep(){
+  const c = document.getElementById('form-content');
+  switch(currentStep){
+    case 0: c.innerHTML = renderStep0(); break;
+    case 1: c.innerHTML = renderStep1(); break;
+    case 2: c.innerHTML = renderStep2(); break;
+    case 3: c.innerHTML = renderStep3(); break;
+    case 4: c.innerHTML = renderStep4(); break;
+    case 5: c.innerHTML = renderStep5(); break;
+  }
+}
+
+function renderStep0(){
+  const sp = subjPages[subjPage];
+  return `
+    <h2>Expliquez vos besoins d'apprentissage</h2>
+    <div class="form-group">
+      <label>Titre <span class="req">*</span></label>
+      <input id="f-title" placeholder="Entrez un titre pour votre soutien" value="${formData.title}" oninput="formData.title=this.value"/>
+      <div class="form-hint">Choisissez un titre clair et descriptif qui reflète votre objectif d'apprentissage</div>
+    </div>
+    <div class="form-group">
+      <label>Description courte</label>
+      <textarea id="f-desc" placeholder="Résumez en quelques mots ce que vous souhaitez apprendre..." oninput="formData.description=this.value">${formData.description}</textarea>
+      <div class="form-hint">Un résumé succinct nous permet de personnaliser l'expérience d'apprentissage à vos besoins</div>
+    </div>
+    <div class="form-group">
+      <label>Choisissez un sujet que vous aimeriez étudier <span class="req">*</span></label>
+      <div class="subjects-grid">
+        ${sp.map(s=>`<button class="subj-btn${formData.subject===s.label?' selected':''}" onclick="selectSubject('${s.label}')"><span class="sicon">${s.icon}</span>${s.label}</button>`).join('')}
+      </div>
+      <div class="subjects-nav">
+        <button onclick="subjPage=Math.max(0,subjPage-1);renderStep()">‹</button>
+        ${subjPage+1} / ${subjPages.length}
+        <button onclick="subjPage=Math.min(subjPages.length-1,subjPage+1);renderStep()">›</button>
+      </div>
+      <div class="form-hint" style="margin-bottom:6px">Vous ne voyez pas votre sujet ? Créez-en un personnalisé</div>
+      <input class="custom-subj" placeholder="Entrez votre sujet personnalisé" value="${formData.customSubject}" oninput="formData.customSubject=this.value"/>
+    </div>`;
+}
+
+function renderStep1(){
+  return `
+    <h2>Course Materials</h2>
+    <div class="form-group">
+      <label>Attach Course Materials</label>
+      <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+        <span class="uicon">☁️</span>
+        <p>Cliquez pour télécharger ou glissez-déposez des fichiers</p>
+        <small>PDF, DOCX, PPTX, MP4 (max 50Mo)</small>
+      </div>
+      <input id="file-input" type="file" style="display:none" accept=".pdf,.docx,.pptx,.mp4" onchange="formData.courseMaterial=this.files[0]?this.files[0].name:'';renderStep()"/>
+      ${formData.courseMaterial?`<div style="margin-top:10px;color:#22c55e;font-size:.85rem">✓ Fichier sélectionné : ${formData.courseMaterial}</div>`:''}
+      <div class="form-hint" style="margin-top:10px">Upload your course materials to get personalized learning assistance</div>
+    </div>`;
+}
+
+function renderStep2(){
+  const opts = [
+    {icon:'📄',label:'Je prépare un examen',val:'exam'},
+    {icon:'📚',label:'Je revois un cours',val:'review'},
+    {icon:'🚀',label:'Je veux apprendre une nouvelle compétence',val:'new'}
+  ];
+  return `
+    <h2>Définissez vos objectifs d'apprentissage</h2>
+    <div class="form-group">
+      <label>Que voulez-vous explorer aujourd'hui ? 🎁</label>
+      <div class="form-hint" style="margin-bottom:8px">Soyez précis sur ce que vous souhaitez accomplir à la fin de ce soutien</div>
+      <textarea placeholder="À la fin de ce soutien, je devrais être capable de..." oninput="formData.objective=this.value">${formData.objective}</textarea>
+    </div>
+    <div class="form-group">
+      <label>Comment puis-je vous aider aujourd'hui ? <span class="req">*</span></label>
+      <div class="form-hint" style="margin-bottom:10px">Sélectionnez l'option qui correspond le mieux à votre objectif d'apprentissage</div>
+      <div class="objectives-row">
+        ${opts.map(o=>`<button class="obj-btn${formData.objectiveType===o.val?' selected':''}" onclick="formData.objectiveType='${o.val}';renderStep()"><span class="oicon">${o.icon}</span>${o.label}</button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderStep3(){
+  const levels = [
+    {val:'beginner',title:'Débutant',desc:'Je découvre ce sujet pour la première fois'},
+    {val:'intermediate',title:'Intermédiaire',desc:'J\'ai quelques bases sur ce sujet'},
+    {val:'advanced',title:'Avancé',desc:'Je maîtrise bien ce sujet'},
+    {val:'expert',title:'Expert',desc:'Je cherche à approfondir mes connaissances'}
+  ];
+  return `
+    <h2>Quel est votre niveau ?</h2>
+    <div class="form-group">
+      <label>Niveau actuel <span class="req">*</span></label>
+      <div class="level-grid">
+        ${levels.map(l=>`<div class="level-btn${formData.level===l.val?' selected':''}" onclick="formData.level='${l.val}';renderStep()"><h4>${l.title}</h4><p>${l.desc}</p></div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderStep4(){
+  return `
+    <h2>Détails supplémentaires</h2>
+    <div class="form-group">
+      <label>Fréquence d'apprentissage souhaitée</label>
+      <input placeholder="Ex. : 3 fois par semaine" oninput="formData.freq=this.value" value="${formData.freq||''}"/>
+    </div>
+    <div class="form-group">
+      <label>Durée de chaque session</label>
+      <input placeholder="Ex. : 30 minutes" oninput="formData.duration=this.value" value="${formData.duration||''}"/>
+    </div>
+    <div class="form-group">
+      <label>Informations complémentaires</label>
+      <textarea placeholder="Y a-t-il autre chose que vous souhaitez nous communiquer ?" oninput="formData.extra=this.value">${formData.extra||''}</textarea>
+    </div>`;
+}
+
+function renderStep5(){
+  return `
+    <h2>Révision de votre soutien</h2>
+    <div class="review-section"><h4>Titre</h4><p>${formData.title||'—'}</p></div>
+    <div class="review-section"><h4>Description</h4><p>${formData.description||'—'}</p></div>
+    <div class="review-section"><h4>Sujet</h4><p><span class="review-chip">${formData.subject||formData.customSubject||'—'}</span></p></div>
+    <div class="review-section"><h4>Objectif</h4><p>${formData.objective||'—'}</p></div>
+    <div class="review-section"><h4>Type d'aide</h4><p><span class="review-chip">${formData.objectiveType==='exam'?'Je prépare un examen':formData.objectiveType==='review'?'Je revois un cours':formData.objectiveType==='new'?'Nouvelle compétence':'—'}</span></p></div>
+    <div class="review-section"><h4>Niveau</h4><p><span class="review-chip">${formData.level||'—'}</span></p></div>
+    <div class="review-section"><h4>Matériau de cours</h4><p>${formData.courseMaterial||'Aucun fichier joint'}</p></div>
+    <div style="margin-top:20px;padding:16px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0;color:#16a34a;font-size:.88rem">
+      ✓ Votre soutien est prêt à être créé. Cliquez sur <strong>Terminer</strong> pour valider.
+    </div>`;
+}
+
+function selectSubject(label){
+  formData.subject=label;
+  renderStep();
+}
+
+function nextStep(){
+  if(currentStep<steps.length-1){currentStep++;renderWizard();}
+  else{finishWizard();}
+}
+function prevStep(){
+  if(currentStep>0){currentStep--;renderWizard();}
+}
+function finishWizard(){
+  showSection('support');
+  document.getElementById('support-empty').innerHTML=`
+    <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px 32px;width:100%;max-width:500px;display:flex;align-items:center;gap:16px;">
+      <div style="font-size:2rem">💬</div>
+      <div>
+        <div style="font-weight:600;color:#1a1a2e;margin-bottom:4px">${formData.title||'Soutien sans titre'}</div>
+        <div style="font-size:.82rem;color:#888">${formData.subject||formData.customSubject||'Sujet non défini'} · ${formData.level||'Niveau non défini'}</div>
+        <div style="margin-top:8px"><span style="background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600">✓ Actif</span></div>
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>
