@@ -1,10 +1,10 @@
 ---
 sidebar_position: 2
-title: Getting Started as a Student
+title: "🎓 Getting Started as a Student"
 description: Step-by-step guide to start using OpenTutorAI as a student
 ---
 
-# 👩‍🎓 Getting Started as a Student
+# 👩‍🎓 Getting Started as a Student 
 
 Welcome to OpenTutorAI! This guide will help you get started 
 with the platform step by step.
