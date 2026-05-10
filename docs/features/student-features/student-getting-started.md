@@ -19,7 +19,7 @@ with the platform step by step.
 
 Click on **Sign Up** to create a new account.
 
-![Sign in page](/img/student-guide/login.gif)
+![Sign in page](/img/student-guide/Login.gif)
 
 Choose your role: **Student**
 
