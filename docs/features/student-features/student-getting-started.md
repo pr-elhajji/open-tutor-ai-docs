@@ -9,7 +9,6 @@ description: Step-by-step guide to start using OpenTutorAI as a student
 Welcome to OpenTutorAI! This guide will help you get started 
 with the platform step by step.
 
-🌐 **Access the platform at:** http://91.134.90.205:5173/
 
 ![OpenTutorAI Home Page](/img/student-guide/home.png)
 
