@@ -55,7 +55,7 @@ After logging in, you arrive on your **Dashboard**.
 1. Click on ➕ **Support**
 
 ![Click Support](/img/student-guide/support-btn.gif)
-   Then Click On **Create My Support**
+   Then click on **Create My Support**
 ![Click On Create My Support](/img/student-guide/support-btn_Create.gif)
 
 2. Fill in the **title** and a short **description** of your goal
@@ -100,7 +100,7 @@ After logging in, you arrive on your **Dashboard**.
 
 3. Choose your chat experience :
 
-![Choose Your Modele](/img/student-guide/chat-Modele.gif)
+![Choose Your Model](/img/student-guide/chat-Modele.gif)
 ![Choose experience](/img/student-guide/chat-choice.gif)
 
 4. Choose your chat modes :
