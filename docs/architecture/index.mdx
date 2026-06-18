@@ -1,0 +1,165 @@
+---
+sidebar_position: 300
+title: "🏗️ Architecture"
+---
+
+# Open TutorAI — Architecture
+
+**OpenTutorAI-CE** (Community Edition) is an open-source project designed to
+provide an educational and collaborative AI-powered platform. This public edition
+is the foundation for a proprietary Enterprise Edition (EE) and is built to
+encourage community contributions.
+
+This page describes how the project is organized: the application domains, the
+gateway and infrastructure layers, the frontend, and the configuration that ties
+them together.
+
+---
+
+## 🗂️ Project Structure
+
+```text
+open-tutor-ai-CE/
+├── main.py                    ← Python entry point (uvicorn)
+│
+├── ── Application Domains ───────────────────────────────────────────────
+├── accounts/                  ← Auth, users, roles, permissions
+├── learning/                  ← Learners, teachers, classrooms, courses
+│   ├── sessions/              ← Chat sessions, tags, sharing, search
+│   └── supports/              ← Personalized tutoring supports
+├── ai/                        ← LLM, providers, RAG, media, memory, tools
+│   ├── llm/                   ← LLM schemas, service, transports
+│   ├── model_catalog/         ← Model overlays/catalog
+│   ├── providers/             ← OpenAI-compatible + Ollama providers
+│   ├── retrieval/             ← RAG pipeline and knowledge bases
+│   └── media/                 ← Audio (TTS/STT) + image generation
+├── content/                   ← Files, uploads, learning resources
+│   ├── files/                 ← User-owned files and extracted content
+│   └── resources/             ← Learning resources not tied to RAG
+├── governance/                ← HITL governance and LLM response evaluation
+│   └── self_regulation/       ← Self-regulation feedback domain
+├── system/                    ← App-level configs and bootstrap services
+│   ├── configs/               ← Runtime app configuration store
+│   └── app/                   ← App info/bootstrap services
+│
+├── ── Gateway & Infrastructure ──────────────────────────────────────────
+├── gateway/                   ← Transport layer
+│   ├── http/                  ← FastAPI app, dependencies, routers/
+│   └── realtime/              ← Socket.IO ASGI (/realtime/socket.io)
+├── data/                      ← ORM models, DB engine, base repository
+├── config/                    ← App settings & constants
+├── common/                    ← Shared utilities (exceptions, logging)
+├── tests/                     ← Pytest suite
+│
+├── ── Frontend ──────────────────────────────────────────────────────────
+├── ui/                        ← SvelteKit application
+│   ├── src/lib/apis/          ← API clients (one folder per domain)
+│   ├── src/lib/components/    ← Reusable Svelte components
+│   ├── src/lib/i18n/          ← Translations (AR / FR / EN)
+│   ├── src/routes/            ← File-based routing
+│   ├── static/                ← Assets (avatars, images, audio)
+│   └── cypress/               ← E2E tests
+│
+├── ── DevOps ────────────────────────────────────────────────────────────
+├── devops/
+│   ├── docker/                ← Dockerfiles + Docker Compose overlays
+│   └── scripts/               ← Dev & ops shell scripts
+│
+├── ── Project ───────────────────────────────────────────────────────────
+├── docs/                      ← Documentation
+├── kubernetes/                ← Helm charts
+├── .github/workflows/         ← CI/CD
+└── var/                       ← Runtime only, gitignored (DB, uploads, vector_db)
+```
+
+:::note Design references
+OpenWebUI and Hermes are used as design references only. OpenTutorAI keeps its own
+domain names and has no runtime dependency on either project.
+:::
+
+---
+
+## 🧱 Application Domains
+
+The application is organized into domains, each owning a clear area of
+responsibility:
+
+| Domain | Responsibility |
+|--------|----------------|
+| **accounts** | Auth, users, roles, permissions |
+| **learning** | Learners, teachers, classrooms, courses — including chat **sessions** (tags, sharing, search) and personalized tutoring **supports** |
+| **ai** | LLM (schemas, service, transports), **model_catalog** (model overlays/catalog), **providers** (OpenAI-compatible + Ollama), **retrieval** (RAG pipeline and knowledge bases), and **media** (audio TTS/STT + image generation) |
+| **content** | **files** (user-owned files and extracted content) and **resources** (learning resources not tied to RAG) |
+| **governance** | HITL governance and LLM response evaluation, including the **self_regulation** feedback domain |
+| **system** | App-level **configs** (runtime configuration store) and **app** info/bootstrap services |
+
+> Full structure with annotations is maintained in `MIGRATION.md` in the
+> application repository.
+
+<!-- 📌 Diagram placeholder: high-level application / domain overview -->
+
+---
+
+## 🔌 Gateway & Infrastructure
+
+| Layer | Responsibility |
+|-------|----------------|
+| **gateway** | Transport layer — `http/` (FastAPI app, dependencies, routers) and `realtime/` (Socket.IO ASGI at `/realtime/socket.io`) |
+| **data** | ORM models, DB engine, base repository |
+| **config** | App settings & constants |
+| **common** | Shared utilities (exceptions, logging) |
+| **tests** | Pytest suite |
+
+The Python entry point is `main.py` (run via uvicorn).
+
+<!-- 📌 Diagram placeholder: request flow through the gateway -->
+
+---
+
+## 🎨 Frontend
+
+The frontend is a **SvelteKit** application in `ui/`:
+
+| Path | Purpose |
+|------|---------|
+| `src/lib/apis/` | API clients (one folder per domain) |
+| `src/lib/components/` | Reusable Svelte components |
+| `src/lib/i18n/` | Translations (AR / FR / EN) |
+| `src/routes/` | File-based routing |
+| `static/` | Assets (avatars, images, audio) |
+| `cypress/` | E2E tests |
+
+<!-- 📌 Diagram placeholder: frontend ↔ backend interaction -->
+
+---
+
+## ⚙️ Configuration
+
+Open TutorAI is configured through environment variables (copy `.env.example` to
+`.env`). The defaults work for local development (`DEBUG=true`).
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DEBUG` | `true` | Set to `false` in production. Enables SECRET_KEY strength check. |
+| `SECRET_KEY` | *(dev placeholder)* | JWT signing key. Required in production (`openssl rand -hex 32`). |
+| `DATABASE_URL` | `sqlite:///./var/tutorai.db` | SQLAlchemy URL. SQLite for dev, PostgreSQL for production. |
+| `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server. Use `http://ollama:11434` inside Docker Compose. |
+| `OPENAI_API_BASE_URL` | *(empty)* | OpenAI-compatible API (LMStudio, GroqCloud, Mistral…). |
+| `OPENAI_API_KEY` | *(empty)* | API key for the OpenAI-compatible provider. |
+| `GEMINI_API_KEY` | *(empty)* | Google Gemini API key. |
+| `CORS_ALLOW_ORIGIN` | `http://localhost:3000,http://localhost:5173` | Comma-separated allowed CORS origins. |
+| `UPLOAD_DIR` | `./var/uploads` | Directory for uploaded files. |
+| `MAX_UPLOAD_SIZE_MB` | `100` | Maximum upload size in MB. |
+| `VECTOR_DB_PATH` | `./var/vector_db` | ChromaDB storage path for RAG. |
+| `EMBEDDING_MODEL` | `sentence-transformers/all-MiniLM-L6-v2` | Default embedding model for RAG. |
+| `AUDIO_TTS_ENGINE` | *(empty)* | TTS engine (e.g. `openai`). Configure via Admin > Settings > Audio. |
+| `AUDIO_STT_ENGINE` | *(empty)* | STT engine. Configure via Admin > Settings > Audio. |
+| `IMAGES_ENGINE` | *(empty)* | Image generation engine (e.g. `openai`). Configure via Admin > Settings > Images. |
+| `GLOBAL_LOG_LEVEL` | `INFO` | Log level: `DEBUG`, `INFO`, `WARNING`, `ERROR`. |
+
+---
+
+:::tip Next steps
+Ready to run it? Head to [Getting Started](../getting-started/) for local and
+Docker setup instructions.
+:::
