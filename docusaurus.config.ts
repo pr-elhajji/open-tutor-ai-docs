@@ -149,19 +149,20 @@ const config: Config = {
       ],
     },
     footer: {
-      style: 'light',
+      style: 'dark',
       logo: {
-        alt: 'My Logo',
-        width: 100,
-        height: 100,
+        alt: 'Open TutorAI',
+        width: 88,
+        height: 88,
         src: '/img/logo.svg',
+        href: '/',
       },
       links: [
         {
-          title: 'Documentation',
+          title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Home',
               to: '/docs/intro',
             },
             {
@@ -169,15 +170,28 @@ const config: Config = {
               to: '/docs/getting-started/',
             },
             {
-              label: 'Teachers',
-              to: '/docs/features/teacher-features/',
+              label: 'Architecture',
+              to: '/docs/architecture/',
             },
             {
-              label: 'Students',
+              label: 'Troubleshooting',
+              to: '/docs/troubleshooting/',
+            },
+          ],
+        },
+        {
+          title: 'Features',
+          items: [
+            {
+              label: 'For Students',
               to: '/docs/features/student-features/',
             },
             {
-              label: 'Parents',
+              label: 'For Teachers',
+              to: '/docs/features/teacher-features/',
+            },
+            {
+              label: 'For Parents',
               to: '/docs/features/parent-features/',
             },
           ],
@@ -190,30 +204,38 @@ const config: Config = {
               href: 'https://discord.gg/BTQtE2deEm',
             },
             {
-              label: 'X',
-              href: 'https://x.com/#',
+              label: 'GitHub',
+              href: 'https://github.com/Open-TutorAi/open-tutor-ai-CE',
             },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
             {
               label: 'Blog',
               to: '/blog',
             },
+          ],
+        },
+        {
+          title: 'Project',
+          items: [
             {
-              label: 'Community',
-              to: '/community/support',
+              label: 'Roadmap',
+              to: '/docs/roadmap',
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/Open-TutorAi/open-tutor-ai-CE',
+              label: 'Team',
+              to: '/docs/team',
+            },
+            {
+              label: 'Contributing',
+              to: '/docs/contributing',
+            },
+            {
+              label: 'FAQ',
+              to: '/docs/faq',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Open TutorAI, Inc.`,
+      copyright: `Open-source under the BSD-3-Clause License.<br/>Copyright © ${new Date().getFullYear()} Open TutorAI. Made with ❤️ for education.`,
     },
     prism: {
       theme: prismThemes.github,

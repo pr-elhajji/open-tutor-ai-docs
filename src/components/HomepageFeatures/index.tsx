@@ -1,81 +1,115 @@
 import type { ReactNode } from 'react';
 import clsx from 'clsx';
+import Link from '@docusaurus/Link';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
 
-const FeatureList = [
+const SmartLearning = require('@site/static/img/smart-learning.svg').default;
+const RichContent = require('@site/static/img/rich-content.svg').default;
+const Collaborative = require('@site/static/img/collaborative.svg').default;
+const Students = require('@site/static/img/students.svg').default;
+const Teachers = require('@site/static/img/teachers.svg').default;
+const Parents = require('@site/static/img/parents.svg').default;
+
+const FEATURES = [
   {
-    title: 'Smart Learning',
-    Svg: require('@site/static/img/smart-learning.svg').default,
-    description: 'AI-driven personalized learning paths that adapt to each student\'s unique needs and pace',
+    kicker: 'Personalized learning',
+    title: 'Student-built Supports',
+    description:
+      'Learners create their own AI-guided tutoring sessions through a step-by-step wizard — subject, course, objectives, level, and details — so every session fits their goals.',
+    link: { to: '/docs/features/student-features', label: 'Explore student features' },
+    Svg: Collaborative,
+    reverse: false,
   },
   {
-    title: 'Rich Content',
-    Svg: require('@site/static/img/rich-content.svg').default,
-    description: 'Access an extensive library of interactive materials, exercises, and real-world examples',
+    kicker: 'Knowledge',
+    title: 'Local RAG & Web Search',
+    description:
+      'Bring textbooks, lecture notes, and live web results into the conversation with the # command — context-aware answers grounded in real course material.',
+    link: { to: '/docs/architecture', label: 'See how it works' },
+    Svg: RichContent,
+    reverse: true,
   },
   {
-    title: 'Collaborative',
-    Svg: require('@site/static/img/collaborative.svg').default,
-    description: 'Learn together with peers through real-time collaboration and group learning features',
+    kicker: 'Engagement',
+    title: 'Avatar Discussion Mode',
+    description:
+      'Go beyond text: an avatar-powered tutor with integrated voice and video brings a face-to-face style of tutoring to every learner.',
+    link: { to: '/docs/features', label: 'Browse all features' },
+    Svg: SmartLearning,
+    reverse: false,
   },
 ];
 
-function Feature({ title, Svg, description }) {
+const ROLES = [
+  {
+    title: 'Students',
+    Svg: Students,
+    to: '/docs/features/student-features',
+    text: 'Join classrooms, build your own tutoring supports, and learn with an avatar tutor.',
+  },
+  {
+    title: 'Teachers',
+    Svg: Teachers,
+    to: '/docs/features/teacher-features',
+    text: 'Create classrooms and courses, share resources, and design personalized supports.',
+  },
+  {
+    title: 'Parents',
+    Svg: Parents,
+    to: '/docs/features/parent-features',
+    text: "Stay connected to your child's learning journey on the platform.",
+  },
+];
+
+function AltFeature({ kicker, title, description, link, Svg, reverse }) {
   return (
-    <div className={clsx('col col--4', styles.featureCard)}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+    <div className={clsx(styles.altRow, reverse && styles.altRowReverse)}>
+      <div className={styles.altText}>
+        <span className={styles.kicker}>{kicker}</span>
+        <Heading as="h3" className={styles.altTitle}>{title}</Heading>
+        <p className={styles.altDesc}>{description}</p>
+        <Link className={styles.altLink} to={link.to}>{link.label} →</Link>
       </div>
-      <div className="text--center padding-horiz--md">
-        <Heading as="h3" className={styles.featureTitle}>{title}</Heading>
-        <p className={styles.featureDescription}>{description}</p>
+      <div className={styles.altMedia}>
+        <Svg className={styles.altSvg} role="img" aria-label={title} />
       </div>
     </div>
   );
 }
 
-function RoleSection({ title, text, Svg }) {
-  return (
-    <div className={clsx('row', styles.roleSection)}>
-      <div className={clsx('col col--6', styles.roleText)}>
-        <div className="padding-horiz--md">
-          <Heading as="h2" className={styles.roleTitle}>{title}</Heading>
-          <p className={styles.roleDescription}>{text}</p>
-        </div>
-      </div>
-      <div className={clsx('col col--6', 'text--center', styles.roleImageContainer)}>
-        <Svg className={styles.roleImage} role="img" />
-      </div>
-    </div>
-  );
-}
-
-export default function HomepageFeatures() {
+export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
       <div className="container">
-        <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
-          ))}
+        <div className={styles.sectionHead}>
+          <Heading as="h2" className={styles.sectionTitle}>
+            Everything you need to teach with AI
+          </Heading>
+          <p className={styles.sectionSub}>
+            Self-hosted, open-source, and purpose-built for education.
+          </p>
         </div>
 
-        <RoleSection
-          title="For Students"
-          text="Open TutorAI provides students with AI-powered tutoring, helping them understand complex topics, practice problems, and receive instant feedback."
-          Svg={require('@site/static/img/students.svg').default}
-        />
-        <RoleSection
-          title="For Teachers"
-          text="Teachers can use Open TutorAI to create personalized learning experiences, track student progress, and get insights into learning patterns."
-          Svg={require('@site/static/img/teachers.svg').default}
-        />
-        <RoleSection
-          title="For Parents"
-          text="Parents can stay informed about their child's learning journey, receive progress reports, and access recommendations to support their child's education."
-          Svg={require('@site/static/img/parents.svg').default}
-        />
+        {FEATURES.map((f, i) => (
+          <AltFeature key={i} {...f} />
+        ))}
+
+        <div className={styles.sectionHead}>
+          <Heading as="h2" className={styles.sectionTitle}>
+            Built for everyone in the classroom
+          </Heading>
+        </div>
+        <div className={styles.roleGrid}>
+          {ROLES.map((r, i) => (
+            <Link key={i} to={r.to} className={styles.roleCard}>
+              <r.Svg className={styles.roleCardSvg} role="img" aria-label={r.title} />
+              <Heading as="h3" className={styles.roleCardTitle}>{r.title}</Heading>
+              <p className={styles.roleCardText}>{r.text}</p>
+              <span className={styles.roleCardLink}>Learn more →</span>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   );

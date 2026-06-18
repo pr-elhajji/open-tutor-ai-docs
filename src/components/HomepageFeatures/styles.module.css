@@ -1,66 +1,174 @@
+/* ──────────────────────────────────────────────────────────────────────
+   Homepage features — alternating rows + role cards (brand-refined)
+   ────────────────────────────────────────────────────────────────────── */
+
 .features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
+  padding: 5rem 0;
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
-}
-
-/* Feature Cards */
-.featureCard {
+/* ── Section headings ───────────────────────────────────────────────── */
+.sectionHead {
   text-align: center;
-  padding: 2rem;
-  background: white;
-  border-radius: 5px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
+  max-width: 720px;
+  margin: 0 auto 3rem;
 }
 
-.featureCard:hover {
-  transform: translateY(-5px);
-}
-
-.featureTitle {
-  font-size: 1.5rem;
-  font-weight: bold;
+.sectionTitle {
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.4px;
   margin-bottom: 0.5rem;
 }
 
-.featureDescription {
-  font-size: 1rem;
-  color: #555;
+.sectionSub {
+  font-size: 1.15rem;
+  color: var(--ifm-color-emphasis-700);
+  margin: 0;
 }
 
-/* Role Sections */
-.roleSection {
-  display: flex;
+/* ── Alternating feature rows ───────────────────────────────────────── */
+.altRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-content: space-between;
-  padding: 3rem 0;
-  border-bottom: 1px solid #ddd;
+  gap: 56px;
+  padding: 3.25rem 0;
 }
 
-.roleTitle {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  color: #333;
+.altRowReverse .altText {
+  order: 2;
 }
 
-.roleDescription {
-  font-size: 1.2rem;
-  color: #666;
-  line-height: 1.5;
+.kicker {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b21f1f;
+  margin-bottom: 0.75rem;
 }
 
-.roleImageContainer {
+.altTitle {
+  font-size: 1.85rem;
+  font-weight: 800;
+  margin-bottom: 0.85rem;
+}
+
+.altDesc {
+  font-size: 1.12rem;
+  line-height: 1.65;
+  color: var(--ifm-color-emphasis-700);
+  margin-bottom: 1.25rem;
+}
+
+.altLink {
+  font-weight: 700;
+  color: #1a2a6c;
+  text-decoration: none;
+}
+
+.altLink:hover {
+  color: #b21f1f;
+  text-decoration: none;
+}
+
+.altMedia {
+  display: flex;
+  justify-content: center;
+}
+
+.altSvg {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+}
+
+/* ── Role cards ─────────────────────────────────────────────────────── */
+.roleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 1rem;
+}
+
+.roleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  padding: 2.25rem 1.75rem;
+  border-radius: 16px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  box-shadow: 0 6px 18px rgba(26, 42, 108, 0.06);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.roleImage {
-  height: 250px;
+.roleCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 34px rgba(26, 42, 108, 0.14);
+  border-color: rgba(26, 42, 108, 0.35);
+  text-decoration: none;
+  color: inherit;
+}
+
+.roleCardSvg {
+  height: 130px;
+  width: auto;
+  margin-bottom: 1.25rem;
+}
+
+.roleCardTitle {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.roleCardText {
+  font-size: 1rem;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.roleCardLink {
+  margin-top: auto;
+  font-weight: 700;
+  color: #1a2a6c;
+}
+
+.roleCard:hover .roleCardLink {
+  color: #b21f1f;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 996px) {
+  .altRow {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    text-align: center;
+    padding: 2.5rem 0;
+  }
+
+  .altRowReverse .altText {
+    order: 0;
+  }
+
+  .altText {
+    order: 2;
+  }
+
+  .kicker {
+    margin-top: 0;
+  }
+
+  .roleGrid {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

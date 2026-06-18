@@ -42,6 +42,62 @@
   width: 24px;
 }
 
+/* ── Footer (on-brand, dark) ────────────────────────────────────────── */
+.footer--dark {
+  --ifm-footer-background-color: #16215a;
+  --ifm-footer-color: #c7d0e8;
+  --ifm-footer-link-color: #c7d0e8;
+  --ifm-footer-title-color: #ffffff;
+  background:
+    radial-gradient(760px 320px at 85% -40%, rgba(253, 187, 45, 0.10), transparent 60%),
+    linear-gradient(135deg, #16215a 0%, #1a2a6c 55%, #20184a 120%);
+  padding-top: 4rem;
+  padding-bottom: 2rem;
+}
+
+.footer__title {
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fdbb2d;
+}
+
+.footer__link-item {
+  transition: color 0.15s ease, padding-left 0.15s ease;
+}
+
+.footer__link-item:hover {
+  color: #ffffff;
+  text-decoration: none;
+  padding-left: 4px;
+}
+
+.footer__logo {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.footer__logo:hover {
+  transform: translateY(-2px);
+}
+
+.footer__bottom {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer__copyright {
+  color: #9aa6c9;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
 .header-discord-link:hover {
   opacity: 0.6;
 }
