@@ -1,0 +1,10 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.community.link.Join us on Discord": {
+    "message": "Join us on Discord",
+    "description": "The label for link Join us on Discord in sidebar community, linking to https://discord.gg/BTQtE2deEm"
+  }
+}

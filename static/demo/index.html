@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>OpenTutorAI — Interactive Demo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter',ui-sans-serif,system-ui,sans-serif;background:#f9fafb;min-height:100vh;transition:background .3s,color .3s}
+
+/* ===== DARK MODE GLOBAL ===== */
+body.dark{background:#111827;color:#f9fafb}
+body.dark .auth-right{background:#1f2937}
+body.dark .auth-form-wrap h2{color:#f9fafb}
+body.dark .form-group input{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .form-group label{color:#d1d5db}
+body.dark #role-page{background:#1f2937}
+body.dark .role-card{background:#1f2937;border-color:#374151;color:#f9fafb}
+body.dark .role-card h2{color:#f9fafb}
+body.dark .role-feats li{color:#d1d5db}
+body.dark .sidebar{background:#111827;border-color:#374151}
+body.dark .sidebar-section-label{color:#6b7280}
+body.dark .nav-btn{color:#d1d5db}
+body.dark .nav-btn:hover{background:#374151;color:#f9fafb}
+body.dark .nav-btn.active{background:linear-gradient(to right,#2563eb,#4f46e5);color:white}
+body.dark .topbar{background:#1f2937;border-color:#374151}
+body.dark .topbar-greeting h3{color:#f9fafb}
+body.dark .topbar-greeting p{color:#9ca3af}
+body.dark .topbar-search{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .icon-btn{background:#1f2937;border-color:#374151}
+body.dark .icon-btn svg{color:#d1d5db}
+body.dark .icon-btn:hover{background:#374151}
+body.dark .main-content{background:#111827}
+body.dark .support-card{background:#1f2937;border-color:#374151}
+body.dark .support-card h4{color:#f9fafb}
+body.dark .support-card p{color:#9ca3af}
+body.dark .sec-title{color:#f9fafb}
+body.dark .wizard-container{background:#1f2937;border-color:#374151}
+body.dark .field-input,.dark .field-textarea,.dark .field-select{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .field-label{color:#d1d5db}
+body.dark .field-hint{color:#9ca3af}
+body.dark .subj-btn{background:#374151;border-color:#4b5563;color:#d1d5db}
+body.dark .subj-btn:hover,.dark .subj-btn.sel{background:#1e3a8a;border-color:#3b5bdb;color:#93c5fd}
+body.dark .level-btn{background:#374151;border-color:#4b5563}
+body.dark .level-btn h4{color:#f9fafb}
+body.dark .level-btn p{color:#9ca3af}
+body.dark .obj-btn{background:#374151;border-color:#4b5563;color:#d1d5db}
+body.dark .upload-zone{background:#374151;border-color:#4b5563}
+body.dark .upload-zone p{color:#d1d5db}
+body.dark .btn-back-wiz{background:#374151;color:#d1d5db}
+body.dark .review-card{background:#1f2937;border-color:#374151}
+body.dark .review-body{background:#111827}
+body.dark .review-field h5{color:#9ca3af}
+body.dark .review-field p{color:#d1d5db}
+body.dark .modal-box{background:#1f2937;color:#f9fafb}
+body.dark .modal-box h3{color:#f9fafb}
+body.dark .modal-box p{color:#d1d5db}
+body.dark .modal-steps li{color:#d1d5db}
+body.dark .chat-main{background:#1f2937;border-color:#374151}
+body.dark .chat-topbar{border-color:#374151}
+body.dark .chat-input{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .chat-input::placeholder{color:#9ca3af}
+body.dark .msg.bot .msg-bubble{background:#374151;color:#f9fafb}
+body.dark .chat-input-row{border-color:#374151}
+body.dark .chat-messages{background:#1f2937}
+body.dark .chat-sidebar{background:#1f2937;border-color:#374151}
+body.dark .chat-sidebar h4{color:#d1d5db}
+body.dark .exp-card{background:#1f2937;border-color:#374151}
+body.dark .exp-card h3{color:#f9fafb}
+body.dark .exp-card p{color:#9ca3af}
+body.dark .exp-feats li{color:#9ca3af}
+body.dark .model-selector-section{background:#1f2937;border-color:#374151}
+body.dark .model-selector-section select{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .model-selector-label{color:#d1d5db}
+body.dark .sidebar-toggle{background:#1f2937;border-color:#374151}
+body.dark .sidebar-footer{color:#6b7280;border-color:#374151}
+body.dark .placeholder-section{color:#6b7280}
+body.dark .empty-state h3{color:#d1d5db}
+/* Settings dark */
+body.dark .settings-card{background:#1f2937;border-color:#374151}
+body.dark .settings-card .field-label{color:#d1d5db}
+body.dark .settings-card .field-input{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .settings-divider{border-color:#374151}
+body.dark .settings-row-label{color:#d1d5db}
+body.dark .settings-row-value{color:#9ca3af}
+body.dark .settings-select{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .keywords-wrap{background:#374151;border-color:#4b5563}
+body.dark .sec-header{background:#111827}
+
+/* ===== AUTH PAGE ===== */
+#auth-page{display:flex;min-height:100vh}
+.auth-left{width:40%;background:linear-gradient(135deg,#1e3a8a,#6d28d9);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;color:white}
+.auth-left-logo{width:100px;height:100px;border-radius:50%;background:white;margin-bottom:20px;display:flex;align-items:center;justify-content:center}
+.auth-left-logo span{font-size:2rem;font-weight:800;color:#1e3a8a}
+.auth-left h1{font-size:1.8rem;font-weight:800;text-align:center;margin-bottom:8px}
+.auth-left h1 span{color:#67e8f9}
+.auth-left p{font-size:.95rem;opacity:.9;text-align:center;font-style:italic;margin-bottom:30px}
+.auth-students-illus{display:flex;align-items:flex-end;justify-content:center;gap:8px;height:140px;margin-top:16px}
+.stud-fig{border-radius:50px 50px 8px 8px;background:rgba(255,255,255,.3)}
+.sf1{width:36px;height:90px}.sf2{width:40px;height:115px;background:rgba(255,255,255,.45)}
+.sf3{width:36px;height:100px}.sf4{width:40px;height:125px;background:rgba(255,255,255,.4)}
+.auth-right{width:60%;display:flex;align-items:center;justify-content:center;padding:40px;background:white;transition:background .3s}
+.auth-form-wrap{width:100%;max-width:420px}
+.auth-form-wrap h2{font-size:1.5rem;font-weight:600;color:#111;margin-bottom:6px;transition:color .3s}
+.auth-form-wrap .auth-sub{font-size:.88rem;color:#6b7280;margin-bottom:28px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.85rem;font-weight:500;color:#374151;margin-bottom:6px;transition:color .3s}
+.form-group input{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:.9rem;outline:none;color:#111;background:white;transition:.15s}
+.form-group input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-check{display:flex;align-items:center;gap:8px;margin-bottom:20px}
+.form-check input{width:16px;height:16px;accent-color:#3b5bdb}
+.form-check label{font-size:.85rem;color:#374151}
+.form-check label a{color:#3b5bdb;text-decoration:none}
+.btn-primary{width:100%;padding:11px;background:#3b5bdb;color:white;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.15s}
+.btn-primary:hover{background:#2f4bc0}
+.or-divider{text-align:center;color:#9ca3af;font-size:.85rem;margin:18px 0;display:flex;align-items:center;gap:10px}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:#e5e7eb}
+.btn-google{width:100%;padding:10px;background:white;border:1px solid #d1d5db;border-radius:8px;font-size:.9rem;color:#374151;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:.15s}
+.btn-google:hover{background:#f9fafb}
+.btn-google svg{width:20px;height:20px}
+.auth-switch{text-align:center;margin-top:20px;font-size:.88rem;color:#6b7280}
+.auth-switch button{color:#3b5bdb;background:none;border:none;cursor:pointer;font-weight:600;font-size:.88rem}
+.forgot-link{color:#3b5bdb;text-decoration:none;font-size:.82rem}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:60px}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#3b5bdb;cursor:pointer;font-size:.82rem;font-weight:600}
+
+/* ===== ROLE ===== */
+#role-page{display:none;min-height:100vh;background:#eef2ff;align-items:center;justify-content:center;flex-direction:column;padding:40px 20px;transition:background .3s}
+#role-page h1{font-size:1.8rem;font-weight:700;color:#1a1a2e;margin-bottom:8px;text-align:center}
+#role-page>p{color:#6b7280;margin-bottom:36px;text-align:center}
+.roles-grid{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.role-card{background:white;border:2px solid #e5e7eb;border-radius:16px;padding:32px 28px;width:260px;display:flex;flex-direction:column;align-items:center;gap:12px;transition:.2s;cursor:pointer}
+.role-card:hover{border-color:#a5b4fc;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.role-icon-wrap{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.ri-student{background:#eff6ff}.ri-teacher{background:#f0fdf4}.ri-parent{background:#fdf4ff}
+.role-card h2{font-size:1rem;font-weight:700;color:#111;transition:color .3s}
+.role-feats{list-style:none;width:100%;margin-bottom:6px}
+.role-feats li{font-size:.82rem;color:#4b5563;padding:3px 0;display:flex;align-items:center;gap:6px;transition:color .3s}
+.role-feats li::before{content:'✓';color:#22c55e;font-weight:700}
+.btn-select{width:100%;padding:11px;border:none;border-radius:8px;color:white;font-size:.88rem;font-weight:600;cursor:pointer;transition:.15s}
+.bs-student{background:#3b5bdb}.bs-student:hover{background:#2f4bc0}
+.bs-teacher{background:#16a34a}.bs-teacher:hover{background:#128c3e}
+.bs-parent{background:#9333ea}.bs-parent:hover{background:#7e22ce}
+.role-note{margin-top:24px;color:#9ca3af;font-size:.78rem;text-align:center;max-width:580px}
+
+/* ===== APP LAYOUT ===== */
+#app{display:none;min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+.sidebar{width:240px;min-width:240px;background:#F5F7F9;border-right:1px solid #e5e7eb;display:flex;flex-direction:column;height:100vh;position:fixed;top:0;left:0;z-index:50;padding:16px 0;transition:width .25s,min-width .25s,background .3s,border-color .3s}
+.sidebar.collapsed{width:80px;min-width:80px}
+.sidebar-logo{display:flex;align-items:center;justify-content:center;padding:12px 16px;min-height:70px}
+.sidebar-ot-badge{width:44px;height:44px;background:#3b5bdb;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sidebar-ot-badge span{color:white;font-weight:900;font-size:14px;letter-spacing:-1px}
+.sidebar-section-label{font-size:.68rem;color:#9ca3af;text-transform:uppercase;font-weight:600;padding:10px 20px 4px;letter-spacing:.6px;white-space:nowrap;overflow:hidden;transition:opacity .2s}
+.sidebar.collapsed .sidebar-section-label{opacity:0}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:8px}
+.nav-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;border-radius:24px;font-size:.88rem;color:#374151;background:none;border:none;width:100%;text-align:left;transition:background .15s,color .15s;font-weight:500;white-space:nowrap;overflow:hidden}
+.nav-btn:hover{background:#e5e7eb;color:#111}
+.nav-btn.active{background:linear-gradient(to right,#2563eb,#4f46e5);color:white}
+.nav-icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-icon svg{width:20px;height:20px}
+.nav-text{font-size:.88rem;font-weight:500;transition:opacity .2s;overflow:hidden}
+.sidebar.collapsed .nav-text{opacity:0;width:0}
+.sidebar-footer{margin-top:auto;padding:12px 20px;font-size:.72rem;color:#9ca3af;border-top:1px solid #e5e7eb;transition:color .3s,border-color .3s}
+.sidebar-toggle{position:fixed;top:22px;left:calc(240px - 14px);width:28px;height:28px;border-radius:50%;background:white;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:60;box-shadow:0 1px 4px rgba(0,0,0,.12);transition:background .15s,left .25s}
+.sidebar-toggle:hover{background:#f3f4f6}
+.sidebar-toggle svg{width:14px;height:14px;color:#374151;transition:transform .25s}
+
+.right-col{display:flex;flex-direction:column;flex:1;margin-left:240px;min-height:100vh;transition:margin-left .25s}
+.right-col.sidebar-collapsed{margin-left:80px}
+.topbar{display:flex;align-items:center;gap:12px;padding:0 24px;height:60px;background:white;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:40;flex-shrink:0;transition:background .3s,border-color .3s}
+.topbar-greeting h3{font-size:.95rem;font-weight:700;color:#111;transition:color .3s}
+.topbar-greeting p{font-size:.78rem;color:#9ca3af}
+.topbar-search{margin-left:auto;padding:8px 16px;border:1px solid #e5e7eb;border-radius:24px;font-size:.85rem;outline:none;width:200px;background:#f9fafb;color:#111;transition:background .3s,border-color .3s,color .3s}
+.topbar-icons{display:flex;align-items:center;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid #e5e7eb;background:white;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .3s}
+.icon-btn svg{width:18px;height:18px;color:#374151}
+.icon-btn:hover{background:#f3f4f6}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:#f59e0b;color:white;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;cursor:pointer}
+
+.main-content{flex:1;padding:28px;overflow-y:auto;transition:background .3s}
+.section{display:none}.section.active{display:block}
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.sec-title{font-size:1.1rem;font-weight:700;color:#111;transition:color .3s}
+.btn-support{display:flex;align-items:center;gap:8px;background:#3b5bdb;color:white;border:none;padding:10px 20px;border-radius:24px;font-size:.88rem;font-weight:600;cursor:pointer;transition:.15s}
+.btn-support:hover{background:#2f4bc0}
+.support-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.support-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:18px;cursor:pointer;transition:.2s}
+.support-card:hover{border-color:#3b5bdb;box-shadow:0 2px 12px rgba(59,91,219,.1);transform:translateY(-2px)}
+.support-card-icon{width:44px;height:44px;background:#f3f4f6;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:1.3rem}
+.support-card h4{font-size:.9rem;font-weight:600;color:#111;margin-bottom:4px;transition:color .3s}
+.support-card p{font-size:.78rem;color:#9ca3af;margin-bottom:12px}
+.progress-bar{height:4px;background:#e5e7eb;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:#3b5bdb;border-radius:2px}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;gap:12px;color:#9ca3af}
+.empty-state svg{width:48px;height:48px}
+.empty-state h3{font-size:1rem;font-weight:600;color:#374151;transition:color .3s}
+.empty-state p{font-size:.88rem;color:#9ca3af;text-align:center}
+.placeholder-section{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;gap:14px;color:#9ca3af;font-size:.95rem;transition:color .3s}
+.placeholder-section svg{width:48px;height:48px}
+
+/* ===== SETTINGS PAGE (exact du vrai projet) ===== */
+.settings-card{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:28px;transition:background .3s,border-color .3s}
+.settings-avatar-row{display:flex;align-items:center;gap:20px;margin-bottom:24px}
+.settings-avatar{width:72px;height:72px;border-radius:50%;background:#f59e0b;color:white;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;flex-shrink:0}
+.settings-avatar-info h4{font-size:.88rem;font-weight:700;color:#374151;margin-bottom:10px;transition:color .3s}
+.settings-avatar-btns{display:flex;gap:8px;flex-wrap:wrap}
+.settings-avatar-btn{padding:5px 14px;border:1px solid #d1d5db;border-radius:6px;background:white;font-size:.8rem;color:#374151;cursor:pointer;transition:.15s}
+.settings-avatar-btn:hover{background:#f3f4f6}
+.settings-avatar-btn.remove{color:#ef4444;border-color:#fca5a5}
+.settings-avatar-btn.remove:hover{background:#fef2f2}
+.settings-divider{border:none;border-top:1px solid #e5e7eb;margin:20px 0;transition:border-color .3s}
+.settings-field{margin-bottom:20px}
+.settings-field .field-label{display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px;transition:color .3s}
+.settings-field .field-input{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:.88rem;color:#111;outline:none;background:white;transition:.15s}
+.settings-field .field-input:focus{border-color:#3b5bdb}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #e5e7eb}
+.settings-row:last-of-type{border-bottom:none}
+.settings-row-label{font-size:.9rem;font-weight:500;color:#374151;transition:color .3s}
+.settings-row-value{display:flex;align-items:center;gap:6px;font-size:.88rem;color:#6b7280}
+.settings-select{padding:7px 32px 7px 12px;border:1px solid #d1d5db;border-radius:8px;background:white;font-size:.85rem;color:#111;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;background-size:1.2em;transition:background .3s,border-color .3s,color .3s}
+.settings-save-row{display:flex;justify-content:flex-end;margin-top:20px}
+.btn-save{padding:10px 28px;background:#3b5bdb;color:white;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;transition:.15s}
+.btn-save:hover{background:#2f4bc0}
+.settings-pw-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #e5e7eb}
+.settings-pw-row span{font-size:.9rem;font-weight:500;color:#374151;transition:color .3s}
+.settings-pw-show{background:none;border:none;color:#6b7280;font-size:.85rem;cursor:pointer;font-weight:500}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal-box{background:white;border-radius:16px;padding:36px 32px;width:420px;max-width:95vw;text-align:center;position:relative;animation:fadeIn .2s ease;transition:background .3s}
+.modal-close{position:absolute;top:14px;right:16px;font-size:1.4rem;cursor:pointer;color:#9ca3af;background:none;border:none;line-height:1}
+.modal-logo{font-size:1.5rem;font-weight:800;color:#1e3a8a;display:block;margin-bottom:16px}
+.modal-box h3{font-size:1.05rem;font-weight:700;color:#111;margin-bottom:8px;transition:color .3s}
+.modal-box p{color:#6b7280;font-size:.88rem;margin-bottom:20px}
+.modal-steps{list-style:none;text-align:left;margin-bottom:28px}
+.modal-steps li{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;font-size:.88rem;color:#374151;transition:color .3s}
+.ms-num{width:26px;height:26px;background:#3b5bdb;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}
+.btn-modal-create{width:100%;padding:13px;background:#6d28d9;color:white;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;margin-bottom:12px;transition:.15s}
+.btn-modal-create:hover{background:#5b21b6}
+.modal-check{display:flex;align-items:center;gap:8px;justify-content:center;font-size:.82rem;color:#9ca3af}
+
+/* ===== WIZARD ===== */
+.wizard-steps-outer{display:flex;align-items:flex-start;margin-bottom:20px;overflow-x:auto;padding:0 4px}
+.wizard-container{background:white;border-radius:16px;padding:32px;border:1px solid #e5e7eb;transition:background .3s,border-color .3s}
+.ws{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:60px;position:relative}
+.ws::after{content:'';position:absolute;top:15px;left:50%;width:100%;height:2px;background:#e5e7eb;z-index:0}
+.ws:last-child::after{display:none}
+.ws-circle{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;position:relative;z-index:1;border:2px solid #e5e7eb;background:white;color:#9ca3af;transition:.3s}
+.ws.done .ws-circle,.ws.active .ws-circle{background:#3b5bdb;border-color:#3b5bdb;color:white}
+.ws-label{font-size:.68rem;color:#9ca3af;white-space:nowrap;margin-top:2px}
+.ws.active .ws-label,.ws.done .ws-label{color:#3b5bdb;font-weight:600}
+.wizard-content{min-height:360px}
+.wizard-nav{display:flex;justify-content:space-between;margin-top:28px;padding-top:20px;border-top:1px solid #e5e7eb;transition:border-color .3s}
+.btn-back-wiz{display:flex;align-items:center;gap:6px;padding:10px 20px;background:#f3f4f6;color:#374151;border:none;border-radius:8px;font-size:.88rem;font-weight:500;cursor:pointer;transition:.15s}
+.btn-back-wiz:hover{background:#e5e7eb}
+.btn-next-wiz{display:flex;align-items:center;gap:6px;padding:10px 24px;background:#3b5bdb;color:white;border:none;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;transition:.15s}
+.btn-next-wiz:hover{background:#2f4bc0}
+.field-label{display:block;font-size:.85rem;font-weight:600;color:#374151;margin-bottom:6px;transition:color .3s}
+.field-hint{font-size:.75rem;color:#9ca3af;margin-top:4px}
+.field-input{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:.88rem;color:#111;outline:none;background:white;transition:.15s}
+.field-input:focus{border-color:#3b5bdb}
+.field-textarea{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:.88rem;color:#111;outline:none;resize:none;min-height:90px;background:white;transition:.15s}
+.field-textarea:focus{border-color:#3b5bdb}
+.field-select{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:.88rem;color:#111;outline:none;background:white;cursor:pointer;transition:.15s}
+.mb-5{margin-bottom:20px}.mb-4{margin-bottom:16px}
+.subjects-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.subj-btn{border:1.5px solid #e5e7eb;border-radius:10px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;background:white;font-size:.78rem;color:#374151;font-weight:500;transition:.15s}
+.subj-btn:hover{border-color:#3b5bdb;background:#eff6ff}
+.subj-btn.sel{border-color:#3b5bdb;background:#eff6ff;color:#3b5bdb}
+.subj-btn span{font-size:1.4rem}
+.pager{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:10px;font-size:.82rem;color:#6b7280}
+.pager-btn{width:28px;height:28px;border-radius:50%;border:1px solid #e5e7eb;background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.pager-btn:hover{background:#f3f4f6}
+.pager-btn:disabled{opacity:.4;cursor:default}
+.obj-row{display:flex;flex-direction:column;gap:10px}
+.obj-btn{border:1.5px solid #e5e7eb;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;background:white;font-size:.88rem;color:#374151;font-weight:500;transition:.15s}
+.obj-btn:hover{border-color:#3b5bdb;background:#eff6ff}
+.obj-btn.sel{border-color:#3b5bdb;background:#eff6ff;color:#3b5bdb}
+.obj-btn .oicon{font-size:1.3rem}
+.level-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
+.level-btn{border:1.5px solid #e5e7eb;border-radius:10px;padding:16px;display:flex;align-items:center;gap:12px;cursor:pointer;background:white;transition:.15s;text-align:left;width:100%}
+.level-btn:hover{border-color:#3b5bdb;background:#eff6ff}
+.level-btn.sel{border-color:#3b5bdb;background:#eff6ff}
+.level-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.li-green{background:#f0fdf4}.li-yellow{background:#fefce8}.li-orange{background:#fff7ed}.li-red{background:#fef2f2}
+.level-btn h4{font-size:.9rem;font-weight:600;color:#111;transition:color .3s}
+.level-btn p{font-size:.78rem;color:#6b7280;margin-top:2px}
+.upload-zone{border:2px dashed #d1d5db;border-radius:12px;padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:.15s;background:#fafafa;text-align:center}
+.upload-zone:hover{border-color:#3b5bdb;background:#eff6ff}
+.upload-zone svg{width:44px;height:44px;color:#3b5bdb}
+.upload-zone p{font-size:.88rem;color:#374151;font-weight:500;transition:color .3s}
+.upload-zone small{font-size:.78rem;color:#9ca3af}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.keyword-row{display:flex;gap:8px;margin-bottom:8px}
+.keyword-row .field-input{flex:1}
+.btn-add-kw{padding:10px 16px;background:#3b5bdb;color:white;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.keywords-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;min-height:32px;padding:8px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;transition:background .3s,border-color .3s}
+.kw-chip{background:#eff6ff;color:#3b5bdb;padding:4px 10px;border-radius:20px;font-size:.8rem;font-weight:500;display:flex;align-items:center;gap:6px}
+.kw-chip button{background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1rem;line-height:1;padding:0}
+.kw-empty{font-size:.8rem;color:#9ca3af;font-style:italic}
+.dates-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.dates-grid label{font-size:.75rem;font-weight:600;color:#6b7280;display:block;margin-bottom:4px}
+.review-card{background:white;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;transition:background .3s,border-color .3s}
+.review-header{background:linear-gradient(135deg,#3b5bdb,#4f46e5);padding:16px 20px;color:white}
+.review-header h3{font-size:1rem;font-weight:700}
+.review-chip{display:inline-block;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;font-size:.78rem;margin-top:6px}
+.review-body{padding:20px;transition:background .3s}
+.review-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px}
+.review-field h5{font-size:.75rem;font-weight:600;color:#9ca3af;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.review-field p{font-size:.88rem;color:#111;transition:color .3s}
+.review-badge{display:inline-block;padding:4px 12px;border-radius:6px;font-size:.8rem;font-weight:600}
+.rb-purple{background:#f5f3ff;color:#6d28d9}.rb-green{background:#f0fdf4;color:#16a34a}
+.review-info{background:#eff6ff;border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:.85rem;color:#1d4ed8;margin-top:8px}
+.review-info svg{width:18px;height:18px;flex-shrink:0}
+
+/* ===== EXPERIENCE ===== */
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.exp-card{border:1.5px solid #e5e7eb;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:.2s;background:white}
+.exp-card:hover{border-color:#3b5bdb;box-shadow:0 4px 16px rgba(59,91,219,.15)}
+.exp-icon{width:56px;height:56px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.ei-text{background:#eff6ff}.ei-avatar{background:#fdf4ff}
+.exp-card h3{font-size:.95rem;font-weight:600;color:#111;margin-bottom:6px;transition:color .3s}
+.exp-card p{font-size:.78rem;color:#6b7280;margin-bottom:12px}
+.exp-feats{list-style:none;text-align:left;font-size:.78rem;color:#6b7280;margin-bottom:16px}
+.exp-feats li{padding:3px 0;display:flex;align-items:center;gap:6px}
+.exp-feats li::before{content:'✓';color:#22c55e;font-weight:700}
+.btn-exp{width:100%;padding:10px;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.15s}
+.be-text{background:#3b5bdb;color:white}.be-text:hover{background:#2f4bc0}
+.be-avatar{background:#9333ea;color:white}.be-avatar:hover{background:#7e22ce}
+.model-selector-section{background:white;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;transition:background .3s,border-color .3s}
+.model-selector-label{display:flex;align-items:center;gap:10px;font-size:.88rem;font-weight:600;color:#374151;transition:color .3s}
+.model-selector-label svg{width:20px;height:20px;color:#3b5bdb}
+.model-selector-section select{padding:10px 16px;border:1px solid #d1d5db;border-radius:10px;font-size:.88rem;background:white;color:#111;cursor:pointer;outline:none;min-width:180px;transition:background .3s,border-color .3s,color .3s}
+.model-hint{font-size:.75rem;color:#9ca3af;margin-left:auto}
+
+/* ===== CHAT ===== */
+.chat-layout{display:flex;gap:16px;height:calc(100vh - 148px)}
+.chat-main{flex:1;display:flex;flex-direction:column;background:white;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;transition:background .3s,border-color .3s}
+.chat-topbar{padding:12px 16px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:12px;transition:border-color .3s}
+.chat-mode-pills{display:flex;gap:6px;margin-left:auto}
+.chat-pill{padding:5px 12px;border-radius:20px;border:1px solid #e5e7eb;background:white;font-size:.78rem;cursor:pointer;transition:.15s;font-weight:500;color:#374151}
+.chat-pill.active{background:#3b5bdb;color:white;border-color:#3b5bdb}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px;transition:background .3s}
+.msg{max-width:80%;display:flex;flex-direction:column;gap:4px}
+.msg.bot{align-self:flex-start}.msg.user{align-self:flex-end}
+.msg-bubble{padding:12px 16px;border-radius:12px;font-size:.88rem;line-height:1.6;color:#111;transition:background .3s,color .3s}
+.msg.bot .msg-bubble{background:#f3f4f6;border-bottom-left-radius:4px}
+.msg.user .msg-bubble{background:#3b5bdb;color:white;border-bottom-right-radius:4px}
+.msg-bubble ul{padding-left:16px;margin-top:6px}
+.msg-bubble ul li{margin-bottom:4px}
+.msg-bubble code{background:rgba(0,0,0,.08);padding:2px 6px;border-radius:4px;font-size:.85em;font-family:monospace}
+.msg.user .msg-bubble code{background:rgba(255,255,255,.2)}
+.chat-input-row{padding:12px 16px;border-top:1px solid #e5e7eb;display:flex;gap:10px;transition:border-color .3s}
+.chat-input{flex:1;padding:10px 16px;border:1px solid #e5e7eb;border-radius:24px;font-size:.88rem;outline:none;background:white;color:#111;transition:.15s}
+.chat-input:focus{border-color:#3b5bdb}
+.btn-send{width:38px;height:38px;border-radius:50%;background:#3b5bdb;color:white;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
+.btn-send:hover{background:#2f4bc0}
+.btn-send svg{width:16px;height:16px}
+.chat-sidebar{width:180px;background:white;border-radius:12px;border:1px solid #e5e7eb;padding:16px;display:flex;flex-direction:column;gap:12px;transition:background .3s,border-color .3s}
+.chat-sidebar h4{font-size:.82rem;font-weight:600;color:#374151;transition:color .3s}
+.prog-num{font-size:1.5rem;font-weight:700;color:#3b5bdb}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-page">
+  <div class="auth-left">
+    <div class="auth-left-logo">
+  <img src="/img/splash.png" alt="OpenTutorAI logo" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
+</div>
+    <h1>Welcome to <span>OpenTutorAI</span></h1>
+    <p>Your path to smarter learning</p>
+   <img src="/img/demo-students.png" alt="Students using OpenTutorAI" style="width:280px;max-width:90%;border-radius:16px;">
+  </div>
+  <div class="auth-right">
+    <div class="auth-form-wrap">
+      <div id="signin-form">
+        <h2>Sign in</h2>
+        <p class="auth-sub">Sign in to access your account</p>
+        <div class="form-group">
+          <label>E-mail</label>
+          <input type="email" placeholder="Enter your email address"/>
+        </div>
+     
+        <div class="form-group">
+          <label style="display:flex;justify-content:space-between;align-items:center">Password <a href="#" class="forgot-link">Forgot password?</a></label>
+          <div class="pw-wrap">
+            <input type="password" placeholder="Enter your password" id="pw-input" />
+            <button class="pw-toggle" onclick="togglePw()">Show</button>
+          </div>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="rem" /><label for="rem">Remember me</label>
+        </div>
+        <button class="btn-primary" onclick="goToRoleSelect()">Sign in</button>
+        <div class="or-divider">OR</div>
+        <button class="btn-google" onclick="goToRoleSelect()">
+          <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Continue with Google
+        </button>
+        <div class="auth-switch">Don't have an account? <button onclick="goToRoleSelect()">Sign up</button></div>
+      </div>
+      <div id="signup-form" style="display:none">
+        <button onclick="showSignin()" style="display:flex;align-items:center;gap:6px;background:none;border:none;color:#3b5bdb;cursor:pointer;font-size:.88rem;font-weight:600;margin-bottom:16px">
+          <svg viewBox="0 0 20 20" fill="currentColor" style="width:16px;height:16px"><path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+          Back to Role Selection
+        </button>
+        <div style="margin-bottom:12px"><span style="background:#eff6ff;color:#3b5bdb;padding:4px 12px;border-radius:20px;font-size:.82rem;font-weight:600">👨‍🎓 Student</span></div>
+        <h2>Create Account</h2>
+        <p class="auth-sub">Fill in your information to get started</p>
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" placeholder="Enter Your First Name"/></div>
+          <div class="form-group"><label>Last Name</label><input type="text" placeholder="Enter Your Last Name"/></div>
+        </div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="Enter Your Email"/></div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pw-wrap"><input type="password" placeholder="Enter Your Password"/><button class="pw-toggle" onclick="togglePw()">Show</button></div>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="terms"/><label for="terms">I agree to the <a href="#">Terms of Use</a> And <a href="#">privacy policy</a></label>
+        </div>
+        <button class="btn-primary" onclick="goToApp()">Create an account</button>
+        <div class="or-divider">OR</div>
+        <button class="btn-google" onclick="goToApp()">
+          <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Continue with Google
+        </button>
+        <div class="auth-switch">Already have an account? <button onclick="showSignin()">Sign in</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+<!-- ROLE -->
+<div id="role-page" style="display:none;min-height:100vh;background:#eef2ff;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px">
+  <h1>Choose your role</h1>
+  <p style="color:#6b7280;margin-bottom:36px;text-align:center">Select the role that best describes you</p>
+  <div class="roles-grid">
+    <div class="role-card">
+      <div class="role-icon-wrap ri-student">👨‍🎓</div>
+      <h2>Learner</h2>
+      <ul class="role-feats">
+        <li>Personalized learning path</li>
+        <li>Track your progress</li>
+        <li>Access the study materials</li>
+        <li>Connect with tutors</li>
+      </ul>
+      <button class="btn-select bs-student" onclick="goToSignup()">Select a role</button>
+    </div>
+    <div class="role-card">
+      <div class="role-icon-wrap ri-teacher">👩‍🏫</div>
+      <h2>Teacher</h2>
+      <ul class="role-feats">
+        <li>Manage your classes</li>
+        <li>Monitor student progress</li>
+        <li>Create homework assignments</li>
+        <li>AI Teaching Assistant</li>
+      </ul>
+      <button class="btn-select bs-teacher" onclick="goToApp()">Select a role</button>
+    </div>
+    <div class="role-card">
+      <div class="role-icon-wrap ri-parent">👨‍👧</div>
+      <h2>Parent</h2>
+      <ul class="role-feats">
+        <li>Monitor the child's progress</li>
+        <li>Communication with teachers</li>
+        <li>View performance reports</li>
+        <li>Schedule consultations</li>
+      </ul>
+      <button class="btn-select bs-parent" onclick="goToApp()">Select a role</button>
+    </div>
+  </div>
+  <p class="role-note">Note: Your role determines the features and access levels available to you. You can request a role change later if needed.</p>
+</div>
+<!-- APP -->
+<div id="app" style="display:none">
+  <div class="layout">
+    <button class="sidebar-toggle" id="sidebar-toggle-btn" onclick="toggleSidebar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <img class="logo-full" src="/img/splash.png"   alt="OpenTutorAI logo" style="height:55px;width:auto;max-width:160px;">
+        <img class="logo-icon" src="/img/splash.png" alt="OpenTutorAI logo"   style="height:42px;width:auto;position:absolute;left:50%;transform:translateX(-50%);opacity:0;">
+      </div>
+      <div class="sidebar-section-label">Student Portal</div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" id="nav-dashboard" onclick="showSection('dashboard')">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zm10-3a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg></span>
+          <span class="nav-text">Dashboard</span>
+        </button>
+        <button class="nav-btn" id="nav-classrooms" onclick="showSection('classrooms')">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="2"/><path d="M9 16c0-1.1 1.3-2 3-2s3 .9 3 2"/></svg></span>
+          <span class="nav-text">My Classrooms</span>
+        </button>
+        <button class="nav-btn" id="nav-support" onclick="showSection('support')">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+          <span class="nav-text">Support</span>
+        </button>
+        <button class="nav-btn" id="nav-assignments" onclick="showSection('assignments')">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg></span>
+          <span class="nav-text">Assignments</span>
+        </button>
+        <button class="nav-btn" id="nav-messages" onclick="showSection('messages')">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="13" y2="14"/></svg></span>
+          <span class="nav-text">Messages</span>
+        </button>
+        <button class="nav-btn" id="nav-settings" onclick="showSection('settings')">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></span>
+          <span class="nav-text">Profile &amp; Settings</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">© 2025 Open TutorAI &nbsp;·&nbsp; Help</div>
+    </aside>
+
+    <div class="right-col" id="right-col">
+      <div class="topbar">
+        <div class="topbar-greeting">
+          <h3>Hello MyFirstName 👋</h3>
+          <p>Let's learn something new today!</p>
+        </div>
+        <input class="topbar-search" placeholder="🔍 Search"/>
+        <div class="topbar-icons">
+          <button class="icon-btn" title="Notifications"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></button>
+          <button class="icon-btn" id="dark-btn" onclick="toggleDark()" title="Toggle dark mode"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg></button>
+          <button class="icon-btn"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button>
+          <div class="user-avatar">MF</div>
+        </div>
+      </div>
+
+      <div class="main-content">
+
+        <!-- DASHBOARD -->
+        <div class="section active" id="sec-dashboard">
+          <div class="sec-header">
+            <span class="sec-title">Dashboard</span>
+            <button class="btn-support" onclick="openModal()">
+              <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg> Support
+            </button>
+          </div>
+          <div class="support-grid">
+            <div class="support-card" onclick="showSection('chat')">
+              <div class="support-card-icon">💻</div>
+              <h4>HTTP Requests</h4>
+              <p>Computer Science · University</p>
+              <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+              <div style="margin-top:6px;font-size:.75rem;color:#9ca3af">0% Complete</div>
+            </div>
+            <div class="support-card" onclick="showSection('chat')">
+              <div class="support-card-icon">🐍</div>
+              <h4>Learn Python Basics for Beginners</h4>
+              <p>Computer Science · High school</p>
+              <div class="progress-bar"><div class="progress-fill" style="width:0%"></div></div>
+              <div style="margin-top:6px;font-size:.75rem;color:#9ca3af">0% Complete</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUPPORT -->
+        <div class="section" id="sec-support">
+          <div class="sec-header">
+            <span class="sec-title">Support</span>
+            <button class="btn-support" onclick="openModal()">
+              <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg> Support
+            </button>
+          </div>
+          <div class="empty-state">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+            <h3>No supports found</h3>
+            <p>Create a support to get personalized learning assistance</p>
+          </div>
+        </div>
+
+        <!-- WIZARD -->
+        <div class="section" id="sec-wizard">
+          <div class="wizard-steps-outer" id="wizard-bar"></div>
+          <div class="wizard-container">
+            <div class="wizard-content" id="wizard-body"></div>
+            <div class="wizard-nav">
+              <button class="btn-back-wiz" id="wiz-back" onclick="wizPrev()">
+                <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg> Back
+              </button>
+              <button class="btn-next-wiz" id="wiz-next" onclick="wizNext()">Continue
+                <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXPERIENCE -->
+        <div class="section" id="sec-experience">
+          <div class="sec-header"><span class="sec-title">Choose Your Experience</span></div>
+          <p style="font-size:.88rem;color:#6b7280;text-align:center">Select the type of chat experience you prefer. You can change this anytime from the settings.</p>
+          <div class="model-selector-section">
+            <div class="model-selector-label">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              AI Model
+            </div>
+            <select>
+              <option>gpt-4.1</option><option>gpt-4.1-mini</option><option>gpt-5</option><option>phi3:latest</option>
+            </select>
+            <div class="model-hint">Choose the AI model for your chat sessions</div>
+          </div>
+          <div class="exp-grid">
+            <div class="exp-card">
+              <div class="exp-icon ei-text">💬</div>
+              <h3>Text Chat</h3>
+              <p>Standard text-based conversation with advanced AI capabilities</p>
+              <ul class="exp-feats"><li>Fast responses</li><li>Resource-efficient</li><li>Code blocks support</li></ul>
+              <button class="btn-exp be-text" onclick="showSection('chat')">Start Text Chat</button>
+            </div>
+            <div class="exp-card">
+              <div class="exp-icon ei-avatar">🤖</div>
+              <h3>Avatar Chat</h3>
+              <p>Interactive 3D avatar with speech and dynamic animations</p>
+              <ul class="exp-feats"><li>Realistic animations</li><li>Natural voice synthesis</li><li>Immersive experience</li></ul>
+              <button class="btn-exp be-avatar" onclick="showSection('chat')">Start Avatar Chat</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAT -->
+        <div class="section" id="sec-chat">
+          <div class="chat-layout">
+            <div class="chat-main">
+              <div class="chat-topbar">
+                <div class="chat-mode-pills" style="margin-left:auto">
+                  <button class="chat-pill active">Avatar</button>
+                  <button class="chat-pill">Discuss</button>
+                </div>
+              </div>
+              <div class="chat-messages" id="chat-msgs">
+                <div class="msg bot">
+                  <div class="msg-bubble">
+                    <strong>I'm your tutor for Learn Python Basics for Beginners.</strong> We'll be working on this topic today.<br><br>
+                    Here's what we'll be covering:<br>
+                    <ul>
+                      <li>Introduction to Python &amp; Your First Program</li>
+                      <li>Variables &amp; Data Types</li>
+                      <li>Operators &amp; Expressions</li>
+                      <li>Control Flow (If Statements)</li>
+                      <li>Loops (For &amp; While)</li>
+                      <li>Functions</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="chat-input-row">
+                <input class="chat-input" id="chat-in" placeholder="Send a Message" onkeydown="if(event.key==='Enter')sendMsg()"/>
+                <button class="btn-send" onclick="sendMsg()">
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="chat-sidebar">
+              <h4>Program Completion</h4>
+              <div class="prog-num">0%</div>
+              <div class="progress-bar" style="width:100%;height:6px"><div class="progress-fill" style="width:0%"></div></div>
+              <div style="font-size:.75rem;color:#9ca3af;margin-top:4px">Keep going!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLASSROOMS -->
+        <div class="section" id="sec-classrooms">
+          <div class="sec-header"><span class="sec-title">My Classrooms</span></div>
+          <div class="placeholder-section">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            <p>No classrooms yet — join one with a course code from your teacher</p>
+          </div>
+        </div>
+
+        <!-- ASSIGNMENTS -->
+        <div class="section" id="sec-assignments">
+          <div class="sec-header"><span class="sec-title">Assignments</span></div>
+          <div class="placeholder-section">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <p>No assignments yet</p>
+          </div>
+        </div>
+
+        <!-- MESSAGES -->
+        <div class="section" id="sec-messages">
+          <div class="sec-header"><span class="sec-title">Messages</span></div>
+          <div class="placeholder-section">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <p>No messages yet</p>
+          </div>
+        </div>
+
+        <!-- SETTINGS — exact du vrai projet -->
+        <div class="section" id="sec-settings">
+          <div class="sec-header"><span class="sec-title">Profile &amp; Settings</span></div>
+          <div class="settings-card" style="max-width:700px">
+            <!-- Avatar row -->
+            <div class="settings-avatar-row">
+              <div class="settings-avatar"> MF</div>
+              <div class="settings-avatar-info">
+                <h4>Profile Image</h4>
+                <div class="settings-avatar-btns">
+                  <button class="settings-avatar-btn">Use Initials</button>
+                  <button class="settings-avatar-btn">Use Gravatar</button>
+                  <button class="settings-avatar-btn remove">Remove</button>
+                </div>
+              </div>
+            </div>
+            <hr class="settings-divider">
+            <!-- Name field -->
+            <div class="settings-field">
+              <label class="field-label">Name</label>
+              <input class="field-input" value="MyFirstName" id="settings-name"/>
+            </div>
+            <hr class="settings-divider">
+            <!-- Change Password -->
+            <div class="settings-pw-row">
+              <span>Change Password</span>
+              <button class="settings-pw-show">Show</button>
+            </div>
+            <hr class="settings-divider">
+            <!-- Theme -->
+            <div class="settings-row">
+              <span class="settings-row-label">Theme</span>
+              <div class="settings-row-value">
+                <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <select class="settings-select" id="theme-select" onchange="applyTheme(this.value)">
+                  <option value="system">System</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
+              </div>
+            </div>
+            <!-- Language -->
+            <div class="settings-row">
+              <span class="settings-row-label">Language</span>
+              <div class="settings-row-value">
+                <select class="settings-select">
+                  <option>English (US)</option>
+                  <option>Français</option>
+                  <option>العربية</option>
+                  <option>Español</option>
+                </select>
+              </div>
+            </div>
+            <!-- Save button -->
+            <div class="settings-save-row">
+              <button class="btn-save" onclick="this.textContent='Saved ✓';setTimeout(()=>this.textContent='Save',1500)">Save</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end main-content -->
+    </div><!-- end right-col -->
+  </div><!-- end layout -->
+</div><!-- end app -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="support-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <span class="modal-logo">OT.</span>
+    <h3>Create Personalized Tutorials for any Subject or Topic</h3>
+    <p>Create Your Learning Path</p>
+    <ul class="modal-steps">
+      <li><div class="ms-num">1</div>Choose your topic and level</li>
+      <li><div class="ms-num">2</div>Set your learning objectives</li>
+      <li><div class="ms-num">3</div>Enjoy AI-powered personalized learning</li>
+    </ul>
+    <button class="btn-modal-create" onclick="startWizard()">Create My support</button>
+    <div class="modal-check"><input type="checkbox" id="dont-show"/><label for="dont-show">Don't show me again</label></div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let dark = false;
+let wizStep = 0;
+const wizSteps = ['Subject','Course','Objectives','Level','Details','Review'];
+const subjects = [
+  [{icon:'📊',label:'Mathematics'},{icon:'🔬',label:'Science'},{icon:'🏛️',label:'History'},{icon:'💻',label:'Computer Science'}],
+  [{icon:'📚',label:'English'},{icon:'🌍',label:'Geography'},{icon:'⚗️',label:'Chemistry'},{icon:'🌿',label:'Biology'}],
+  [{icon:'⚛️',label:'Physics'},{icon:'🎵',label:'Music'},{icon:'🎨',label:'Arts'},{icon:'❓',label:'Other'}]
+];
+const levels = [
+  {id:'primary',icon:'📗',title:'Primary school',desc:'Foundational learning for young minds',cls:'li-green'},
+  {id:'middle',icon:'📙',title:'Middle school',desc:'Building critical thinking',cls:'li-yellow'},
+  {id:'high',icon:'📘',title:'High school',desc:'Preparing students for advanced studies',cls:'li-orange'},
+  {id:'university',icon:'📕',title:'University',desc:'Expert-level guidance',cls:'li-red'}
+];
+const objTypes = [
+  {id:'exam',icon:'📝',label:"I'm preparing for an exam"},
+  {id:'course',icon:'📚',label:"I'm reviewing a course"},
+  {id:'skill',icon:'🚀',label:"I want to build a new skill"}
+];
+let fd = {title:'',desc:'',subject:'',customSubj:'',objType:'',objText:'',level:'',lang:'English',duration:'30min',keywords:[]};
+let subjPage = 0;
+
+// ===== AUTH =====
+function togglePw(){
+  const i = document.getElementById('pw-input');
+  if(i) i.type = i.type==='password'?'text':'password';
+}
+function showSignin(){
+  document.getElementById('signin-form').style.display='block';
+  document.getElementById('signup-form').style.display='none';
+}
+function goToRoleSelect(){
+  document.getElementById('auth-page').style.display='none';
+  document.getElementById('role-page').style.display='flex';
+}
+function goToSignup(){
+  document.getElementById('role-page').style.display='none';
+  document.getElementById('auth-page').style.display='flex';
+  document.getElementById('signin-form').style.display='none';
+  document.getElementById('signup-form').style.display='block';
+}
+function goToApp(){
+  document.getElementById('auth-page').style.display='none';
+  document.getElementById('role-page').style.display='none';
+  document.getElementById('app').style.display='block';
+}
+
+// ===== SIDEBAR =====
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  const rc = document.getElementById('right-col');
+  const btn = document.getElementById('sidebar-toggle-btn');
+  const collapsing = !sb.classList.contains('collapsed');
+  sb.classList.toggle('collapsed');
+  rc.classList.toggle('sidebar-collapsed');
+  btn.style.left = collapsing ? (80-14)+'px' : (240-14)+'px';
+  btn.querySelector('svg').style.transform = collapsing ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+
+// ===== SECTIONS =====
+function showSection(name){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+  const sMap={dashboard:'sec-dashboard',support:'sec-support',wizard:'sec-wizard',experience:'sec-experience',chat:'sec-chat',classrooms:'sec-classrooms',assignments:'sec-assignments',messages:'sec-messages',settings:'sec-settings'};
+  const nMap={dashboard:'nav-dashboard',support:'nav-support',wizard:'nav-support',experience:'nav-support',chat:'nav-support',classrooms:'nav-classrooms',assignments:'nav-assignments',messages:'nav-messages',settings:'nav-settings'};
+  const sec=document.getElementById(sMap[name]);
+  if(sec)sec.classList.add('active');
+  const nb=document.getElementById(nMap[name]);
+  if(nb)nb.classList.add('active');
+}
+
+// ===== MODAL =====
+function openModal(){document.getElementById('support-modal').classList.add('show');}
+function closeModal(){document.getElementById('support-modal').classList.remove('show');}
+
+// ===== WIZARD =====
+function startWizard(){
+  closeModal();
+  wizStep=0;
+  fd={title:'',desc:'',subject:'',customSubj:'',objType:'',objText:'',level:'',lang:'English',duration:'30min',keywords:[]};
+  subjPage=0;
+  showSection('wizard');
+  renderWizard();
+}
+function renderWizard(){
+  document.getElementById('wizard-bar').innerHTML = wizSteps.map((s,i)=>{
+    const cls=i<wizStep?'ws done':i===wizStep?'ws active':'ws';
+    const num=i<wizStep?'✓':`${i+1}`;
+    return `<div class="${cls}"><div class="ws-circle">${num}</div><div class="ws-label">${s}</div></div>`;
+  }).join('');
+  document.getElementById('wiz-back').style.display=wizStep===0?'none':'flex';
+  const nb=document.getElementById('wiz-next');
+  nb.innerHTML=wizStep===wizSteps.length-1?'Start Learning ✓':'Continue <svg style="width:16px;height:16px" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>';
+  renderWizStep();
+}
+function renderWizStep(){
+  const body=document.getElementById('wizard-body');
+  if(wizStep===0){
+    const sp=subjects[subjPage];
+    body.innerHTML=`<h3 style="font-size:1.05rem;font-weight:700;color:#111;margin-bottom:20px">Tell us about your learning needs</h3>
+    <div class="mb-5"><label class="field-label">Title <span style="color:#ef4444">*</span></label>
+    <input class="field-input" placeholder="Enter a title for your support" value="${fd.title}" oninput="fd.title=this.value"/>
+    <div class="field-hint">Choose a clear, descriptive title that reflects your learning goal</div></div>
+    <div class="mb-5"><label class="field-label">Short Description</label>
+    <textarea class="field-textarea" placeholder="Briefly describe what you want to learn..." oninput="fd.desc=this.value">${fd.desc}</textarea>
+    <div class="field-hint">A brief overview helps us tailor the learning experience to your needs</div></div>
+    <label class="field-label">Choose a subject <span style="color:#ef4444">*</span></label>
+    <div class="subjects-grid">${sp.map(s=>`<button class="subj-btn${fd.subject===s.label?' sel':''}" onclick="fd.subject='${s.label}';renderWizStep()"><span>${s.icon}</span>${s.label}</button>`).join('')}</div>
+    <div class="pager">
+      <button class="pager-btn" onclick="subjPage=Math.max(0,subjPage-1);renderWizStep()" ${subjPage===0?'disabled':''}>‹</button>
+      ${subjPage+1}/${subjects.length}
+      <button class="pager-btn" onclick="subjPage=Math.min(subjects.length-1,subjPage+1);renderWizStep()" ${subjPage>=subjects.length-1?'disabled':''}>›</button>
+    </div>
+    <div style="margin-top:10px"><div class="field-hint" style="margin-bottom:6px">Don't see your subject? Create a custom one</div>
+    <input class="field-input" placeholder="Enter your custom subject" value="${fd.customSubj}" oninput="fd.customSubj=this.value"/></div>`;
+  } else if(wizStep===1){
+    body.innerHTML=`<h3 style="font-size:1.05rem;font-weight:700;color:#111;margin-bottom:16px">Course Materials</h3>
+    <p class="field-label">Attach Course Materials</p>
+    <div class="upload-zone">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+      <p>Click to upload or drag and drop files</p><small>PDF, DOCX, PPTX, MP4 (max 50MB)</small>
+    </div>
+    <p style="text-align:center;font-size:.8rem;color:#9ca3af;margin-top:16px">Upload your course materials to get personalized learning assistance</p>`;
+  } else if(wizStep===2){
+    body.innerHTML=`<h3 style="font-size:1.05rem;font-weight:700;color:#111;margin-bottom:20px">Define your learning objectives</h3>
+    <div class="mb-5"><label class="field-label">What do you want to explore today?</label>
+    <div class="field-hint" style="margin-bottom:8px">Be specific about what you hope to achieve by the end of this support</div>
+    <textarea class="field-textarea" style="min-height:100px" placeholder="By the end of this support, I should be able to..." oninput="fd.objText=this.value">${fd.objText}</textarea></div>
+    <label class="field-label">How can I support you today? <span style="color:#ef4444">*</span></label>
+    <div class="field-hint" style="margin-bottom:10px">Select the option that best describes your learning goal</div>
+    <div class="obj-row">${objTypes.map(o=>`<button class="obj-btn${fd.objType===o.id?' sel':''}" onclick="fd.objType='${o.id}';renderWizStep()"><span class="oicon">${o.icon}</span>${o.label}</button>`).join('')}</div>`;
+  } else if(wizStep===3){
+    body.innerHTML=`<h3 style="font-size:1.05rem;font-weight:700;color:#111;margin-bottom:8px">Choose your learning level</h3>
+    <p style="font-size:.85rem;color:#6b7280;margin-bottom:16px">Select the appropriate level <span style="color:#ef4444">*</span></p>
+    <div class="level-grid">${levels.map(l=>`<button class="level-btn${fd.level===l.id?' sel':''}" onclick="fd.level='${l.id}';renderWizStep()">
+    <div class="level-icon ${l.cls}">${l.icon}</div>
+    <div><h4>${l.title}</h4><p>${l.desc}</p></div></button>`).join('')}</div>`;
+  } else if(wizStep===4){
+    body.innerHTML=` <h3 style="font-size:1.05rem;font-weight:700;color:#111;margin-bottom:8px">Fine-tune your learning experience</h3>
+      <p style="font-size:.85rem;color:#6b7280;margin-bottom:20px">These additional details help us personalize your support experience</p>
+      <div class="details-grid">
+        <div><label class="field-label">Content Language</label>
+          <select class="field-select" onchange="fd.lang=this.value"><option>English</option><option>French</option><option>Arabic</option><option>Spanish</option></select>
+          <div class="field-hint">Select the language you want your content delivered in</div></div>
+        <div><label class="field-label">Estimated Duration</label>
+          <select class="field-select" onchange="fd.duration=this.value"><option>15min</option><option selected>30min</option><option>45min</option><option>1h</option><option>2h</option></select>
+          <div class="field-hint">How long do you expect to spend on this support?</div></div>
+      </div>
+      <div class="mb-5"><label class="field-label">Keywords (for search &amp; recommendations)</label>
+        <div class="field-hint" style="margin-bottom:8px">Add relevant keywords to help find this support later</div>
+        <div class="keyword-row">
+          <input class="field-input" id="kw-in" placeholder="Add keywords..." onkeydown="if(event.key==='Enter')addKw()"/>
+          <button class="btn-add-kw" onclick="addKw()">Add</button>
+        </div>
+        <div class="keywords-wrap" id="kw-wrap">${fd.keywords.length===0?'<span class="kw-empty">No keywords added yet</span>':fd.keywords.map(k=>`<div class="kw-chip">${k}<button onclick="removeKw('${k}')">×</button></div>`).join('')}</div></div>
+      <div><label class="field-label">Availability</label>
+        <div class="field-hint" style="margin-bottom:8px">Set when this support should be available (optional)</div>
+        <div class="dates-grid">
+          <div><label>Start Date</label><input type="date" class="field-input"/></div>
+          <div><label>End Date</label><input type="date" class="field-input"/></div>
+        </div></div>`;
+  } else if(wizStep===5){
+    const subjName=fd.subject||fd.customSubj||'—';
+    const levelName=levels.find(l=>l.id===fd.level)?.title||'—';
+    const objName=objTypes.find(o=>o.id===fd.objType)?.label||'—';
+    body.innerHTML=`<h3 style="font-size:1.05rem;font-weight:700;color:#111;margin-bottom:8px">Review your support</h3>
+    <p style="font-size:.85rem;color:#6b7280;margin-bottom:20px">Verify all details before creating your support</p>
+    <div class="review-card">
+      <div class="review-header"><h3>${fd.title||'Untitled Support'}</h3><div class="review-chip">${subjName}</div></div>
+      <div class="review-body">
+        <div class="review-row">
+          <div class="review-field"><h5>Learning Type</h5><div class="review-badge rb-purple">${objName}</div></div>
+          <div class="review-field"><h5>Learning Level</h5><div class="review-badge rb-green">${levelName}</div></div>
+        </div>
+        <div class="review-field"><h5>Content Details</h5><p style="display:flex;gap:16px"><span>🌐 ${fd.lang}</span><span>⏱ ${fd.duration}</span></p></div>
+      </div>
+    </div>
+    <div class="review-info">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Click "Start Learning" below to create your support and begin your personalized learning experience.
+    </div>`;
+  }
+}
+function addKw(){const i=document.getElementById('kw-in');if(!i)return;const v=i.value.trim();if(v&&!fd.keywords.includes(v)){fd.keywords.push(v);i.value='';renderWizStep();}}
+function removeKw(k){fd.keywords=fd.keywords.filter(x=>x!==k);renderWizStep();}
+function wizNext(){if(wizStep<wizSteps.length-1){wizStep++;renderWizard();}else{showSection('experience');}}
+function wizPrev(){if(wizStep>0){wizStep--;renderWizard();}}
+
+// ===== CHAT =====
+const chatReplies=[
+  "Great question! In Python, loops allow you to repeat code. For example: <code>for i in range(5): print(i)</code> — this displays 0, 1, 2, 3, 4.",
+  "Exactly! Variables are declared simply: <code>age = 20</code> or <code>name = 'Alice'</code>. Python detects the type automatically.",
+  "Well done! Keep asking questions. Functions in Python are defined with <code>def</code>: <code>def hello(): print('Hello!')</code>",
+  "Perfect, you're progressing fast! Do you have any questions about what we've covered so far?"
+];
+let ri=0;
+function sendMsg(){
+  const inp=document.getElementById('chat-in');
+  const msg=inp.value.trim();if(!msg)return;
+  const msgs=document.getElementById('chat-msgs');
+  const u=document.createElement('div');u.className='msg user';
+  u.innerHTML=`<div class="msg-bubble">${msg}</div>`;msgs.appendChild(u);
+  inp.value='';msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{
+    const b=document.createElement('div');b.className='msg bot';
+    b.innerHTML=`<div class="msg-bubble">${chatReplies[ri%chatReplies.length]}</div>`;
+    ri++;msgs.appendChild(b);msgs.scrollTop=msgs.scrollHeight;
+  },800);
+}
+
+// ===== DARK MODE — appliqué sur TOUT le body =====
+function toggleDark(){
+  dark=!dark;
+  document.body.classList.toggle('dark',dark);
+  // Sync theme select in settings
+  const sel=document.getElementById('theme-select');
+  if(sel) sel.value=dark?'dark':'light';
+}
+function applyTheme(val){
+  if(val==='dark'){dark=true;document.body.classList.add('dark');}
+  else if(val==='light'){dark=false;document.body.classList.remove('dark');}
+  else{
+    dark=window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.classList.toggle('dark',dark);
+  }
+}
+</script>
+</body>
+</html>
