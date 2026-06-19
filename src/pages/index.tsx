@@ -20,13 +20,6 @@ const QUICK_START_COMMANDS = [
   'docker compose --env-file .env -f devops/docker/docker-compose.yaml up --build',
 ];
 
-const STATS = [
-  { num: '100%', label: 'Open source' },
-  { num: 'AR · FR · EN', label: 'Multilingual UI' },
-  { num: '1 command', label: 'Docker deploy' },
-  { num: 'BSD-3', label: 'Licensed' },
-];
-
 function HomepageHeader() {
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -55,9 +48,8 @@ function HomepageHeader() {
               built for the classroom
             </Heading>
             <p className={styles.heroSubtitle}>
-              Open TutorAI is an open-source platform that gives every student
-              personalized learning support and an engaging avatar tutor —
-              collaborative, multilingual, and made for education.
+              An open-source project designed to provide an educational and
+              collaborative AI-powered platform.
             </p>
 
             <div className={styles.buttons}>
@@ -109,23 +101,6 @@ function HomepageHeader() {
         </div>
       </div>
     </header>
-  );
-}
-
-function StatsStrip() {
-  return (
-    <section className={styles.statsStrip}>
-      <div className="container">
-        <div className={styles.statsRow}>
-          {STATS.map((s, i) => (
-            <div key={i} className={styles.stat}>
-              <div className={styles.statNum}>{s.num}</div>
-              <div className={styles.statLabel}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -220,7 +195,6 @@ export default function Home(): ReactNode {
       description={siteConfig.tagline}
     >
       <HomepageHeader />
-      <StatsStrip />
       <main>
         <HomepageFeatures />
         <QuickStart />

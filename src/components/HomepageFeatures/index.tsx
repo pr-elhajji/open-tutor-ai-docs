@@ -23,10 +23,10 @@ const FEATURES = [
   },
   {
     kicker: 'Knowledge',
-    title: 'Local RAG & Web Search',
+    title: 'Learn from your own materials',
     description:
-      'Bring textbooks, lecture notes, and live web results into the conversation with the # command — context-aware answers grounded in real course material.',
-    link: { to: '/docs/architecture', label: 'See how it works' },
+      'Bring your textbooks, lecture notes, and trusted online sources right into the conversation — so every answer stays grounded in what you are actually studying.',
+    link: { to: '/docs/features', label: 'Browse all features' },
     Svg: RichContent,
     reverse: true,
   },

@@ -12,7 +12,16 @@
   padding: 84px 0 72px;
   color: #fff;
   overflow: hidden;
-  background: linear-gradient(135deg, #16215a 0%, #1a2a6c 55%, #20184a 120%);
+  background: linear-gradient(120deg, #16215a, #1a2a6c, #3a1c71, #20184a, #16215a);
+  background-size: 300% 300%;
+  animation: heroGradient 18s ease infinite;
+}
+
+/* Continuously shifting brand gradient */
+@keyframes heroGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Interactive spotlight that follows the cursor */
@@ -86,6 +95,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .heroBanner,
   .heroBlob1,
   .heroBlob2 {
     animation: none;
@@ -217,37 +227,6 @@
 
 .heroSvg:hover {
   transform: translateY(-6px);
-}
-
-/* ── Stats strip ────────────────────────────────────────────────────── */
-.statsStrip {
-  background: var(--ifm-background-surface-color);
-  border-bottom: 1px solid var(--ifm-color-emphasis-200);
-  padding: 28px 0;
-}
-
-.statsRow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  text-align: center;
-}
-
-.stat {
-  padding: 6px 0;
-}
-
-.statNum {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #1a2a6c;
-  line-height: 1.2;
-}
-
-.statLabel {
-  font-size: 0.9rem;
-  color: var(--ifm-color-emphasis-700);
-  margin-top: 4px;
 }
 
 /* ── Quick Start strip ──────────────────────────────────────────────── */
@@ -422,11 +401,6 @@
 
   .heroSvg {
     max-width: 420px;
-  }
-
-  .statsRow {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
   }
 }
 
